@@ -5,7 +5,9 @@
 
   Haber görsellerinden kısa videolara, sosyal medya içeriklerini tek bir çalışma alanında hazırla.
 
-  [**⬇ Windows için indir · 3.2.3**](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.2.3-Setup.exe) &nbsp; · &nbsp; [**⬇ Android için indir · 3.1.3**](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.1.3-Android.apk) &nbsp; · &nbsp; [Sürüm bilgileri](https://github.com/Yusufozkal/karevo/releases/tag/karevo-v3.2.3-preview) &nbsp; · &nbsp; [Kurulum](#kurulum) &nbsp; · &nbsp; [Güncellemeler](#güncellemeler) &nbsp; · &nbsp; [Kaynak kodu](source/README.md)
+  ### [⬇ Windows için indir · 3.2.3](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.2.3-Setup.exe) &nbsp;&nbsp;&nbsp; [⬇ Android için indir · 3.1.3](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.1.3-Android.apk)
+
+  [Sürüm bilgileri](https://github.com/Yusufozkal/karevo/releases/tag/karevo-v3.2.3-preview) · [Kurulum](#kurulum) · [Güncellemeler](#güncellemeler) · [Kaynak kodu](source/README.md)
 
   Windows 10 / 11 · 64 bit &nbsp; • &nbsp; Android 8+ &nbsp; • &nbsp; Manuel kurulum
 </div>
