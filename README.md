@@ -5,7 +5,7 @@
 
   Haber görsellerinden kısa videolara, sosyal medya içeriklerini tek bir çalışma alanında hazırla.
 
-  ### [⬇ Windows için indir · 3.2.3](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.2.3-Setup.exe) &nbsp;&nbsp;&nbsp; [⬇ Android için indir · 3.1.3](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.1.3-Android.apk)
+  ### [Windows 3.2.3 · aktarım durumu](https://gitlab.com/Turkish_Vito/karevo/-/blob/migration/complete-transfer/migration/transfer/README.md) &nbsp;&nbsp;&nbsp; [⬇ Android için indir · 3.1.3](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.1.3-Android.apk)
 
   [Sürüm bilgileri](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview) · [Kurulum](#kurulum) · [Güncellemeler](#güncellemeler) · [Kaynak kodu](source/README.md)
 
@@ -35,9 +35,7 @@ Video düzenleyici tek kliple çalışır. Kaynak video en fazla 5 dakika ve 120
 
 **Windows**
 
-1. [Karevo Windows kurucusunu indir](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.2.3-Setup.exe).
-2. İndirilen `Karevo-3.2.3-Setup.exe` dosyasını aç ve kurulum adımlarını izle.
-3. Uygulamayı aç, bir şablon seç ve ilk tasarımını oluştur.
+Windows kurucusunun tamamı [GitLab aktarım dalında](https://gitlab.com/Turkish_Vito/karevo/-/blob/migration/complete-transfer/migration/transfer/README.md) saklanıyor ve yeniden birleştirilerek SHA-256 doğrulaması yapıldı. Releases indirmesine ekleme işlemi GitLab hesabının CI kimlik doğrulamasını bekliyor. Bu nedenle Windows için henüz çalışan bir Releases indirmesi gösterilmiyor. Aktarım dalındaki araçla dosya yerelde de birleştirilebilir.
 
 **Gereksinim:** Windows 10 veya Windows 11, 64 bit. Kurulumdan önce mevcut çalışmalarını proje dosyası olarak yedekle.
 
@@ -66,13 +64,13 @@ https://gitlab.com/Turkish_Vito/karevo
 
 > **Proje GitHub'dan GitLab'a taşındı.** Güncelleme adresi olarak eski GitHub adresini kaydettiysen, uygulama artık yeni sürüm bulamaz. **Güncellemeler → Güncelleme ayarları** bölümünde adresi bir kez yukarıdaki GitLab adresiyle değiştir.
 
-Otomatik denetim açıksa uygulama imzalı kanalda yayımlanan sürümleri kontrol eder; indirme ve kurulumu sen başlatırsın. Güncelleme bilgileri imza ile doğrulanır; indirilen kurucunun boyutu ve dosya özeti kontrol edilir. Bu doğrulama, Windows yayıncı sertifikasının yerini almaz.
+GitLab proje adresi yeni istemcilerde ayarlanabilir; bu işlem tek başına çalışan bir otomatik güncelleme yayını oluşturmaz. Eski imzalı metadata içindeki GitHub kurucu adresleri özel anahtar olmadan değiştirilemez. Yeni imzalı yayın hazırlanırken mevcut sürümler elle kurulur. Güncelleme bilgileri imza ile doğrulanır; indirilen kurucunun boyutu ve dosya özeti kontrol edilir. Bu doğrulama, Windows yayıncı sertifikasının yerini almaz.
 
 ## Sürümler ve arşiv
 
 [Karevo 3.2.3 sürümünü görüntüle](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview) · [Tüm sürümler](https://gitlab.com/Turkish_Vito/karevo/-/releases)
 
-Windows ve Android kaynakları, testler ve derleme talimatları artık [Kaynak kodu](source/README.md) bölümündedir. Kurulum dosyaları GitLab'daki Releases bölümündedir; güncelleme dağıtımı da aynı adresten yapılır.
+Windows ve Android kaynakları, testler ve derleme talimatları artık [Kaynak kodu](source/README.md) bölümündedir. Android kurucusu GitLab Releases bölümündedir; Windows kurucusunun verileri aktarım dalındadır. İmzalı otomatik güncelleme kanalının yeni adrese taşınması ayrıca tamamlanmalıdır.
 
 <details>
 <summary>Önceki sürümler ve mevcut projelerle uyumluluk</summary>
@@ -84,3 +82,6 @@ Mevcut Windows verilerinin konumu korunur; eski proje dosyaları açılabilir. A
 Proje daha önce GitHub'da yayımlanıyordu; o adres artık kullanılmıyor ve yeni adrese yönlendirmiyor. Güncel indirmeler ve güncellemeler yalnızca GitLab'dadır.
 
 </details>
+
+
+[Özgün GitHub geçmişi ve 7 sürüm etiketi yedeği](migration/README.md)

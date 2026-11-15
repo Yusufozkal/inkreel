@@ -36,3 +36,6 @@ Karevo-Dosyalar-ve-Imza-Yedegi*
 **/*-results.json
 **/qa/*-preview.png
 **/verification-*.json
+
+# GitLab CI npm cache
+.npm/
