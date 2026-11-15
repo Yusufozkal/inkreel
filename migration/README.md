@@ -13,4 +13,4 @@ git clone github-history.bundle eski-karevo
 
 Bu yedek geçmişi mevcut GitLab dalının üzerine yazmaz. Özel anahtar, parola veya kişisel proje dosyası içermez. Kurulum dosyaları Git verisinin parçası değildir.
 
-Windows dosyası ve sürüme yayınlama aracı [ayrı aktarım dalında](https://gitlab.com/Turkish_Vito/karevo/-/tree/migration/complete-transfer/migration/transfer) hazırlanmıştır. Bu dal geçici taşıma içindir; ana kaynak ağacının parçası değildir. GitLab hesabı CI çalıştırmaya izin verdiğinde pipeline çalıştırılarak kurucu package registry ve sürüm indirmelerine eklenir.
+Windows kurucusu ve özgün Git geçmişi yedeği [GitLab sürüm sayfasına](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview) yayımlandı. Dosyalar GitLab üzerinden yeniden indirilerek SHA-256 ve boyut kontrolleri yapıldı. Aktarım dalı denetlenebilir bir taşıma kaydı olarak korunur; indirmeler için Releases bağlantılarını kullanın.
