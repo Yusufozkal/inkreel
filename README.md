@@ -41,7 +41,7 @@ Video düzenleyici tek kliple çalışır. Kaynak video en fazla 5 dakika ve 120
 
 **Android**
 
-[Karevo Android APK’sını indir](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.1.3-Android.apk), dosyayı aç ve kurulum adımlarını izle. Android 8 veya üzeri gerekir. Karevo yeni, bağımsız bir uygulama olarak eski sürümün yanında kurulur. Eski uygulamadaki çalışmalarını proje dosyası olarak dışa aktararak Karevo’da açabilirsin.
+[Karevo Android APK’sını indir](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.1.3-Android.apk), dosyayı aç ve kurulum adımlarını izle. Android 8 veya üzeri gerekir. Güncel Android sürümü 3.1.3’tür ve Windows 3.2.3 ile aynı sürüm sayfasında yayımlanır. Karevo yeni, bağımsız bir uygulama olarak eski sürümün yanında kurulur. Eski uygulamadaki çalışmalarını proje dosyası olarak dışa aktararak Karevo’da açabilirsin.
 
 **Projeler:** Yeni kayıtlar `.karevo` uzantısını kullanır. Eski `.bulten` ve `.netice` projeleri de açılabilir.
 
