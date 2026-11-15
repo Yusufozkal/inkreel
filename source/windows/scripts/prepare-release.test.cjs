@@ -17,12 +17,12 @@ function fixture() {
   fs.writeFileSync(installer, executable); fs.writeFileSync(keyFile, keys.privateKey.export({ type: 'pkcs8', format: 'pem' }), { mode: 0o600 }); fs.writeFileSync(notes, 'Bu sürüm test düzeltmelerini içerir.');
   const calls = [], logs = [];
   const argv = ['--repo', 'example-owner/bulten-updates', '--installer', installer, '--version', version, '--sequence', '30100', '--key', keyFile, '--out', out, '--notes-file', notes];
-  const dependencies = { publicKey: pin, log: value => logs.push(JSON.parse(value)), spawnSync(command, args, options) { calls.push({ command, args, options }); if (command === 'gh') return { status: 0 }; return spawnSync(command, args, { ...options, stdio: 'pipe' }); } };
+  const dependencies = { publicKey: pin, log: value => logs.push(JSON.parse(value)), spawnSync(command, args, options) { calls.push({ command, args, options }); if (command === 'glab') return { status: 0 }; return spawnSync(command, args, { ...options, stdio: 'pipe' }); } };
   return { root, version, installer, keyFile, out, notes, pin, keys, executable, calls, logs, argv, dependencies, cleanup() { fs.rmSync(root, { recursive: true, force: true }); } };
 }
 function replace(argv, key, value) { const result = argv.slice(); result[result.indexOf(key) + 1] = value; return result; }
 
-test('preparation signs exact public files; absence of --publish performs zero GitHub writes', () => {
+test('preparation signs exact public files; absence of --publish performs zero GitLab writes', () => {
   const f = fixture();
   try {
     fs.mkdirSync(f.out); fs.writeFileSync(path.join(f.out, 'not-a-public-asset.txt'), 'Must never enter asset list');
@@ -36,19 +36,19 @@ test('preparation signs exact public files; absence of --publish performs zero G
     assert(!JSON.stringify(f.logs).includes('BEGIN PRIVATE KEY')); assert.equal(f.logs.length, 1);
   } finally { f.cleanup(); }
 });
-test('--publish invokes gh once with only installer and signed manifest as release assets', () => {
+test('--publish invokes glab once with only installer and signed manifest as release assets', () => {
   const f = fixture();
   try {
     const result = prepareRelease([...f.argv, '--publish'], f.dependencies);
-    assert.equal(result.published, true); const github = f.calls.filter(call => call.command === 'gh'); assert.equal(github.length, 1);
-    const command = github[0]; assert.deepEqual(command.args.slice(0, 7), ['release', 'create', 'v3.1.0', '--repo', 'example-owner/bulten-updates', path.join(f.out, path.basename(f.installer)), path.join(f.out, 'latest.json')]);
-    assert.equal(command.options.shell, false); assert(!command.args.includes(f.keyFile)); assert(command.args.includes('--notes-file')); assert.equal(f.logs.at(-1).published, true);
+    assert.equal(result.published, true); const gitlab = f.calls.filter(call => call.command === 'glab'); assert.equal(gitlab.length, 1);
+    const command = gitlab[0]; assert.deepEqual(command.args.slice(0, 8), ['release', 'create', 'v3.1.0', path.join(f.out, path.basename(f.installer)), path.join(f.out, 'latest.json'), '--repo', 'example-owner/bulten-updates', '--name']); assert.equal(command.args[8], 'Karevo 3.1.0');
+    assert.equal(command.options.shell, false); assert(!command.args.includes(f.keyFile)); assert(command.args.includes('--notes-file')); assert.equal(f.logs[0].feed, 'https://gitlab.com/example-owner/bulten-updates/-/releases/permalink/latest/downloads/latest.json'); assert.equal(f.logs.at(-1).published, true);
   } finally { f.cleanup(); }
 });
-test('version and filename must match; malformed or duplicate options cannot trigger a GitHub action', () => {
+test('version and filename must match; malformed or duplicate options cannot trigger a GitLab action', () => {
   const f = fixture();
   try {
-    for (const argv of [replace(f.argv, '--version', '3.2.0'), replace(f.argv, '--version', '03.1.0'), replace(f.argv, '--sequence', '0'), replace(f.argv, '--repo', 'owner/..'), [...f.argv, '--publsh', 'yes'], [...f.argv, '--publish', '--publish']]) assert.throws(() => prepareRelease(argv, f.dependencies));
+    for (const argv of [replace(f.argv, '--version', '3.2.0'), replace(f.argv, '--version', '03.1.0'), replace(f.argv, '--sequence', '0'), replace(f.argv, '--repo', 'owner/..'), replace(f.argv, '--repo', 'owner/repo.git'), replace(f.argv, '--repo', 'owner'), [...f.argv, '--publsh', 'yes'], [...f.argv, '--publish', '--publish']]) assert.throws(() => prepareRelease(argv, f.dependencies));
     assert.equal(f.calls.length, 0); assert.equal(fs.existsSync(f.out), false);
   } finally { f.cleanup(); }
 });
@@ -89,11 +89,11 @@ test('wrong signing identity or non-PE installers are rejected before public fil
     assert.equal(f.calls.length, 0); assert.equal(fs.existsSync(f.out), false);
   } finally { f.cleanup(); }
 });
-test('GitHub failure cannot be reported as a successful publication', () => {
+test('GitLab failure cannot be reported as a successful publication', () => {
   const f = fixture();
   try {
     const originalRunner = f.dependencies.spawnSync;
-    f.dependencies.spawnSync = (command, args, options) => command === 'gh' ? { status: 1 } : originalRunner(command, args, options);
+    f.dependencies.spawnSync = (command, args, options) => command === 'glab' ? { status: 1 } : originalRunner(command, args, options);
     assert.throws(() => prepareRelease([...f.argv, '--publish'], f.dependencies), /tamamlanamadı/); assert(!f.logs.some(value => value.published));
   } finally { f.cleanup(); }
 });

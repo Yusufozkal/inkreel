@@ -63,16 +63,19 @@ async function main(){
  await until(()=>/HTTPS/.test($(IDS.message).textContent),'invalid HTTPS source explanation');
  assert.equal(invokeCount('configureUpdates'),invalidBefore,'Invalid HTTP never reaches native host');
  for(const bad of ['javascript:alert(1)','https://user:password@example.com/latest.json','https://example.com/feed#fragment','https://example.com/\\evil'])assert.throws(()=>w.StudioUpdates.sourceUrl(bad));
- assert.equal(w.StudioUpdates.sourceUrl('octocat/bulten-updates'),'https://github.com/octocat/bulten-updates/releases/latest/download/latest.json');
- assert.equal(w.StudioUpdates.sourceUrl('https://github.com/octocat/bulten-updates.git/'),'https://github.com/octocat/bulten-updates/releases/latest/download/latest.json');
+ assert.equal(w.StudioUpdates.sourceUrl('Turkish_Vito/karevo'),'https://gitlab.com/Turkish_Vito/karevo/-/releases/permalink/latest/downloads/latest.json');
+ assert.equal(w.StudioUpdates.sourceUrl('group/sub/karevo'),'https://gitlab.com/group/sub/karevo/-/releases/permalink/latest/downloads/latest.json');
+ assert.equal(w.StudioUpdates.sourceUrl('https://gitlab.com/Turkish_Vito/karevo'),'https://gitlab.com/Turkish_Vito/karevo/-/releases/permalink/latest/downloads/latest.json');
+ assert.equal(w.StudioUpdates.sourceUrl('https://gitlab.com/Turkish_Vito/karevo.git/'),'https://gitlab.com/Turkish_Vito/karevo/-/releases/permalink/latest/downloads/latest.json');
+ assert.equal(w.StudioUpdates.sourceUrl('https://gitlab.com/Turkish_Vito/karevo/-/releases/v1.0.0'),'https://gitlab.com/Turkish_Vito/karevo/-/releases/v1.0.0');
  assert.equal(w.StudioUpdates.sourceUrl('https://updates.example.com/stable/latest.json'),'https://updates.example.com/stable/latest.json');
- input(IDS.feed,'octocat/bulten-updates');input(IDS.auto,false);click(IDS.save);
+ input(IDS.feed,'Turkish_Vito/karevo');input(IDS.auto,false);click(IDS.save);
  await until(()=>controls.state.configured&&$(IDS.check).disabled===false,'source saved');
  const configured=controls.calls.filter(call=>call.method==='configureUpdates').at(-1).config;
- assert.deepEqual(configured,{feedUrl:'https://github.com/octocat/bulten-updates/releases/latest/download/latest.json',autoCheck:false});
+ assert.deepEqual(configured,{feedUrl:'https://gitlab.com/Turkish_Vito/karevo/-/releases/permalink/latest/downloads/latest.json',autoCheck:false});
  assert.equal($(IDS.auto).checked,false,'Typed auto-check choice survives redraw');
  assert.equal($(IDS.feed).value,configured.feedUrl);
- check('Source validation and GitHub normalization preserve edited source and auto-check preference');
+ check('Source validation and GitLab normalization preserve edited source and auto-check preference');
 
  controls.checkError='İnternet bağlantısı kurulamadı.';const beforeOffline=project();click(IDS.check);
  await until(()=>/İnternet bağlantısı/.test($(IDS.message).textContent)&&!$(IDS.check).disabled,'offline failure display');

@@ -1,17 +1,22 @@
-# Karevo 3.2.3 public artifact transfer
+# Karevo sürüm araçları
 
-These tools prepare and attach exactly two public artifacts to the expected **unpublished prerelease draft** in `Yusufozkal/karevo`:
+Bu klasörde yalnızca sürüm notu şablonu (`release-notes.md`) bulunur.
 
-- `Karevo-3.2.3-Setup.exe`
-- `Karevo-3.1.3-Android.apk`
+Eskiden burada, kurucuları 8 MB'lık parçalara bölüp git verisi olarak yükleyen ve GitHub Actions ile taslak sürüme ekleyen tek kullanımlık araçlar vardı. Proje GitLab'a taşındığı için bu araçlar kaldırıldı; kurucular artık doğrudan sürüm sayfasına eklenir.
 
-No signing keys, keystores, passwords, backup archives or source archives are accepted. The plan contains only public filenames, sizes, hashes and Git blob identifiers. The workflow does not publish the draft, edit a stable release or create a `latest.json` file.
+## Windows sürümü yayımlamak
+
+İmzalı `latest.json` hazırlamak ve GitLab'da sürüm oluşturmak için:
 
 ```sh
-python test-preview.py
-python test-prepare.py
-python prepare.py /path/to/Karevo-3.2.3-Setup.exe /path/to/Karevo-3.1.3-Android.apk RELEASE_ID /path/to/new-prepared-directory
-python upload-prep.py /path/to/new-prepared-directory
+cd source/windows
+node scripts/prepare-release.cjs --repo Turkish_Vito/karevo --version 3.2.4 --sequence 30204 \
+  --installer /yol/Karevo-3.2.4-Setup.exe --key /guvenli/yol/update-private.pem \
+  --notes-file ../release-tools/release-notes.md
 ```
 
-`prepare.py` only writes local files. `upload-prep.py` makes public Git blob uploads and commits the draft-only workflow/plan to the current main branch; invoke it only after the actual build artifacts and expected draft identity have been verified. It never dispatches the workflow or publishes a release. Before publication, independently verify both resulting asset sizes and SHA-256 values, then verify the public downloads and that the stable update feed is unchanged. Disable the one-off workflow after use.
+Komut dosyaları `release/v<sürüm>` klasörüne hazırlar. Kontrol ettikten sonra aynı komuta `--publish` ekle.
+
+Betik `--publish` verilmeden ağa hiçbir şey yazmaz. Yayımlama [glab](https://gitlab.com/gitlab-org/cli) ile yapılır; önce `glab auth login` ile kendi GitLab hesabında oturum aç. Ayrıntılar: [İmzalı güncellemeler](../windows/docs/SIGNED-UPDATES.md).
+
+Android APK'sı ve Windows kurucusu, GitLab'daki sürüm sayfasına bağlantı (asset link) olarak eklenir. İndirme adresinin `.../-/releases/<etiket>/downloads/<dosya>` biçiminde çalışması için her bağlantının `filepath` değeri `/<dosya adı>` olmalıdır.
