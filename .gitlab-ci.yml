@@ -1,0 +1,49 @@
+# Karevo source checks (GitLab CI equivalent of the former GitHub Actions workflow).
+# The QA suites use jsdom and mocked native bridges (no Playwright/Chromium is
+# required; clip-real-browser-check is not part of `npm test`), so the plain
+# node image is enough.
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - source/**/*
+        - .gitlab-ci.yml
+
+default:
+  interruptible: true
+  timeout: 15 minutes
+
+windows-source:
+  image: node:22
+  variables:
+    ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+  cache:
+    key: windows-npm
+    paths:
+      - .npm/
+  before_script:
+    - command -v python3 >/dev/null || (apt-get update -qq && apt-get install -y -qq python3)
+  script:
+    - python3 source/tools/check-source.py
+    - cd source/windows
+    - npm ci --cache "$CI_PROJECT_DIR/.npm" --prefer-offline
+    - (cd qa && npm ci --cache "$CI_PROJECT_DIR/.npm" --prefer-offline)
+    - npm run test:native
+    - (cd qa && npm test)
+    - node scripts/package-browser.cjs
+    - node qa/single-html-check.cjs dist/Karevo.html
+
+android-source:
+  image: node:22
+  cache:
+    key: android-npm
+    paths:
+      - .npm/
+  script:
+    - cd source/android/qa
+    - npm ci --cache "$CI_PROJECT_DIR/.npm" --prefer-offline
+    - npm test
+  # The Android SDK compile step (build-apk.sh --compile-only) is intentionally
+  # skipped: it needs the Android SDK, JDK 21 and sdkmanager packages
+  # (platforms;android-35, build-tools;35.0.0), which the node image lacks.

@@ -12,7 +12,7 @@ const privatePem = generated.privateKey.export({ type: 'pkcs8', format: 'pem' })
 const publicPem = generated.publicKey.export({ type: 'spki', format: 'pem' }).toString();
 const pin = C.normalizePublicKey(publicPem);
 function payload(overrides = {}) {
-  return { schema: 'bulten-studio-update', schemaVersion: 1, appId: C.APP_ID, platform: 'win32', arch: 'x64', channel: 'stable', version: '3.2.0', sequence: 30200, publishedAt: '2026-10-20T12:34:56.000Z', installer: { fileName: 'Bulten-Studio-3.2.0-Setup.exe', url: 'https://github.com/publisher/releases/releases/download/v3.2.0/Bulten-Studio-3.2.0-Setup.exe', sha256: 'ab'.repeat(32), size: 104452033 }, notes: 'Yeni şablonlar ve düzeltmeler.\nÇalışmalar korunur.', ...overrides };
+  return { schema: 'bulten-studio-update', schemaVersion: 1, appId: C.APP_ID, platform: 'win32', arch: 'x64', channel: 'stable', version: '3.2.0', sequence: 30200, publishedAt: '2026-10-20T12:34:56.000Z', installer: { fileName: 'Bulten-Studio-3.2.0-Setup.exe', url: 'https://gitlab.com/publisher/releases/-/releases/v3.2.0/downloads/Bulten-Studio-3.2.0-Setup.exe', sha256: 'ab'.repeat(32), size: 104452033 }, notes: 'Yeni şablonlar ve düzeltmeler.\nÇalışmalar korunur.', ...overrides };
 }
 function sign(value = payload(), key = privatePem) { return JSON.stringify(C.createEnvelope(value, key)); }
 function verify(raw, options = {}) { return C.verifyEnvelope(raw, { publicKey: pin, appVersion: '3.1.0', ...options }); }

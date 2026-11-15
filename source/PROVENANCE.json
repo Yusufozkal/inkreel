@@ -1,6 +1,6 @@
 {
   "sourceImportDate": "2026-11-15",
-  "baselineRelease": "https://github.com/Yusufozkal/karevo/releases/tag/karevo-v3.2.3-preview",
+  "baselineRelease": "https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview",
   "platforms": [
     {
       "platform": "windows",

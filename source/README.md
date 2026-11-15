@@ -1,13 +1,13 @@
 # Karevo kaynak kodu
 
-Windows 3.2.3 ve Android 3.1.3 uygulamalarının kaynakları, tasarım varlıkları, testleri ve derleme araçları bu klasördedir. İndirme ve güncelleme adresleri aynı depoda korunur; derlenmiş uygulamalar [Releases](https://github.com/Yusufozkal/karevo/releases/tag/karevo-v3.2.3-preview) bölümündedir.
+Windows 3.2.3 ve Android 3.1.3 uygulamalarının kaynakları, tasarım varlıkları, testleri ve derleme araçları bu klasördedir. İndirme ve güncelleme adresleri aynı depoda korunur; derlenmiş uygulamalar [Releases](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview) bölümündedir.
 
 | Klasör | İçerik |
 | --- | --- |
 | [windows](windows/) | Electron uygulaması, yerel dosya köprüsü, güncelleyici, NSIS kurucusu ve testler |
 | [android](android/) | Android Java uygulaması, WebView köprüsü, web arayüzü, APK derleme ve doğrulama araçları |
 | [branding](branding/) | Karevo'nun PNG ve SVG simgeleri |
-| [release-tools](release-tools/) | Doğrulanmış kurucuları taslak önizleme sürümüne aktaran araçlar ve testler |
+| [release-tools](release-tools/) | Sürüm notu şablonu; yayımlama `windows/scripts/prepare-release.cjs` ile yapılır |
 | [tools](tools/) | Kaynak yayınlama güvenlik kontrolü |
 
 ## Windows
