@@ -5,7 +5,9 @@
 
   Haber görsellerinden kısa videolara, sosyal medya içeriklerini tek bir çalışma alanında hazırla.
 
-  [**⬇ Windows için indir · 3.2.3**](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.2.3-Setup.exe) &nbsp; · &nbsp; [**⬇ Android için indir · 3.1.3**](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.1.3-Android.apk) &nbsp; · &nbsp; [Sürüm bilgileri](https://github.com/Yusufozkal/karevo/releases/tag/karevo-v3.2.3-preview) &nbsp; · &nbsp; [Kurulum](#kurulum) &nbsp; · &nbsp; [Güncellemeler](#güncellemeler) &nbsp; · &nbsp; [Kaynak kodu](source/README.md)
+  ### [⬇ Windows için indir · 3.2.3](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.2.3-Setup.exe) &nbsp;&nbsp;&nbsp; [⬇ Android için indir · 3.1.3](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.1.3-Android.apk)
+
+  [Sürüm bilgileri](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview) · [Kurulum](#kurulum) · [Güncellemeler](#güncellemeler) · [Kaynak kodu](source/README.md)
 
   Windows 10 / 11 · 64 bit &nbsp; • &nbsp; Android 8+ &nbsp; • &nbsp; Manuel kurulum
 </div>
@@ -33,7 +35,7 @@ Video düzenleyici tek kliple çalışır. Kaynak video en fazla 5 dakika ve 120
 
 **Windows**
 
-1. [Karevo Windows kurucusunu indir](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.2.3-Setup.exe).
+1. [Karevo Windows kurucusunu indir](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.2.3-Setup.exe).
 2. İndirilen `Karevo-3.2.3-Setup.exe` dosyasını aç ve kurulum adımlarını izle.
 3. Uygulamayı aç, bir şablon seç ve ilk tasarımını oluştur.
 
@@ -41,7 +43,7 @@ Video düzenleyici tek kliple çalışır. Kaynak video en fazla 5 dakika ve 120
 
 **Android**
 
-[Karevo Android APK’sını indir](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.1.3-Android.apk), dosyayı aç ve kurulum adımlarını izle. Android 8 veya üzeri gerekir. Karevo yeni, bağımsız bir uygulama olarak eski sürümün yanında kurulur. Eski uygulamadaki çalışmalarını proje dosyası olarak dışa aktararak Karevo’da açabilirsin.
+[Karevo Android APK’sını indir](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.1.3-Android.apk), dosyayı aç ve kurulum adımlarını izle. Android 8 veya üzeri gerekir. Güncel Android sürümü 3.1.3’tür ve Windows 3.2.3 ile aynı sürüm sayfasında yayımlanır. Karevo yeni, bağımsız bir uygulama olarak eski sürümün yanında kurulur. Eski uygulamadaki çalışmalarını proje dosyası olarak dışa aktararak Karevo’da açabilirsin.
 
 **Projeler:** Yeni kayıtlar `.karevo` uzantısını kullanır. Eski `.bulten` ve `.netice` projeleri de açılabilir.
 
@@ -56,19 +58,21 @@ Kurucu henüz Windows yayıncı sertifikasıyla imzalanmadığı için Microsoft
 
 Karevo 3.2.3 şu anda manuel kurulumla sunuluyor; yukarıdaki kurucuyu indirerek kurabilirsin. Bu sürüm otomatik güncelleme kanalına eklenmedi. Android sürümü de bu sayfadaki APK ile elle güncellenir.
 
-Uygulamanın **Güncellemeler → Güncelleme ayarları** bölümünde kullanılabilecek depo adresi:
+Uygulamanın **Güncellemeler → Güncelleme ayarları** bölümünde kullanılabilecek proje adresi:
 
 ```text
-https://github.com/Yusufozkal/karevo
+https://gitlab.com/Turkish_Vito/karevo
 ```
+
+> **Proje GitHub'dan GitLab'a taşındı.** Güncelleme adresi olarak eski GitHub adresini kaydettiysen, uygulama artık yeni sürüm bulamaz. **Güncellemeler → Güncelleme ayarları** bölümünde adresi bir kez yukarıdaki GitLab adresiyle değiştir.
 
 Otomatik denetim açıksa uygulama imzalı kanalda yayımlanan sürümleri kontrol eder; indirme ve kurulumu sen başlatırsın. Güncelleme bilgileri imza ile doğrulanır; indirilen kurucunun boyutu ve dosya özeti kontrol edilir. Bu doğrulama, Windows yayıncı sertifikasının yerini almaz.
 
 ## Sürümler ve arşiv
 
-[Karevo 3.2.3 sürümünü görüntüle](https://github.com/Yusufozkal/karevo/releases/tag/karevo-v3.2.3-preview) · [Tüm sürümler](https://github.com/Yusufozkal/karevo/releases)
+[Karevo 3.2.3 sürümünü görüntüle](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview) · [Tüm sürümler](https://gitlab.com/Turkish_Vito/karevo/-/releases)
 
-Windows ve Android kaynakları, testler ve derleme talimatları artık [Kaynak kodu](source/README.md) bölümündedir. Kurulum dosyaları Releases bölümünde, güncelleme dağıtımı aynı adreste korunur.
+Windows ve Android kaynakları, testler ve derleme talimatları artık [Kaynak kodu](source/README.md) bölümündedir. Kurulum dosyaları GitLab'daki Releases bölümündedir; güncelleme dağıtımı da aynı adresten yapılır.
 
 <details>
 <summary>Önceki sürümler ve mevcut projelerle uyumluluk</summary>
@@ -77,6 +81,6 @@ Karevo, daha önce Bülten Studio adıyla sunuluyordu. Eski adla yayımlanan sü
 
 Mevcut Windows verilerinin konumu korunur; eski proje dosyaları açılabilir. Android sürümü ayrı kurulur, eski uygulamanın verilerini otomatik taşımaz. 3.0 ve önceki sürümlerde güncel kurucuyu bir kez elle kurmak gerekir.
 
-Eski depo adresi GitHub tarafından yeni adrese yönlendirilir. İmzalı arşiv dosyaları önceki sürümlerin güncelleme doğrulamasını korumak için değiştirilmez.
+Proje daha önce GitHub'da yayımlanıyordu; o adres artık kullanılmıyor ve yeni adrese yönlendirmiyor. Güncel indirmeler ve güncellemeler yalnızca GitLab'dadır.
 
 </details>

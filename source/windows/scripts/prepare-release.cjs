@@ -1,4 +1,4 @@
-/* Prepare only explicit public release files. No GitHub writes without --publish. */
+/* Prepare only explicit public release files. No GitLab writes without --publish. Publishing uses the glab CLI (gitlab.com/<namespace>/<project>). */
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
@@ -50,7 +50,8 @@ function validateExecutable(file) {
 function prepareRelease(argv, dependencies = {}) {
   const run = dependencies.spawnSync || spawnSync, log = dependencies.log || console.log;
   const a = args(argv);
-  if (!/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?\/[A-Za-z0-9_.-]{1,100}$/.test(a.repo || '') || ['.', '..'].includes((a.repo || '').split('/')[1])) throw new Error('--repo kullanici/depo gerekli.');
+  const repoSegment = '[A-Za-z0-9_][A-Za-z0-9_.-]{0,99}';
+  if (!new RegExp('^' + repoSegment + '(?:/' + repoSegment + ')+$').test(a.repo || '') || (a.repo || '').split('/').some(part => /^\.+$/.test(part) || /\.git$/.test(part)) || (a.repo || '').length > 255) throw new Error('--repo ad-alani/proje (iç içe gruplar dahil, örn. Turkish_Vito/karevo) biçiminde gerekli.');
   for (const key of ['installer', 'version', 'sequence', 'key']) if (!a[key]) throw new Error('--' + key + ' gerekli.');
   C.compareVersions(a.version, a.version);
   if (!/^[1-9]\d*$/.test(a.sequence) || !Number.isSafeInteger(Number(a.sequence))) throw new Error('Yayın sırası pozitif ve güvenli bir tamsayı olmalı.');
@@ -81,7 +82,7 @@ function prepareRelease(argv, dependencies = {}) {
   if (sameFile(manifestInfo, installer)) throw new Error('İmzalı yayın bilgisi kurucunun üzerine yazamaz.');
   const target = targetInfo.absolute, manifest = manifestInfo.absolute;
   if (!sameFile(installer, targetInfo)) fs.copyFileSync(installer.absolute, target);
-  const url = 'https://github.com/' + a.repo + '/releases/download/v' + a.version + '/' + encodeURIComponent(fileName);
+  const url = 'https://gitlab.com/' + a.repo + '/-/releases/v' + a.version + '/downloads/' + encodeURIComponent(fileName);
   const signArgs = [path.join(__dirname, 'sign-update.cjs'), '--installer', target, '--url', url, '--version', a.version, '--sequence', a.sequence, '--key', key.absolute, '--out', manifest];
   if (notes) signArgs.push('--notes-file', notes.absolute);
   let result = run(process.execPath, signArgs, { stdio: 'inherit', shell: false });
@@ -94,15 +95,15 @@ function prepareRelease(argv, dependencies = {}) {
   try { let length; while ((length = fs.readSync(handle, buffer, 0, buffer.length, null)) > 0) { total += length; if (total > C.MAX_INSTALLER_BYTES) throw new Error('Hazırlanan kurucu boyut sınırını aşıyor.'); hash.update(buffer.subarray(0, length)); } }
   finally { fs.closeSync(handle); }
   if (verifiedTarget.stat.size !== signed.installer.size || total !== signed.installer.size || hash.digest('hex') !== signed.installer.sha256) throw new Error('Hazırlanan kurucu imzalı dosya özetiyle eşleşmiyor.');
-  const feed = 'https://github.com/' + a.repo + '/releases/latest/download/latest.json';
-  const releaseArgs = ['release', 'create', 'v' + a.version, '--repo', a.repo, target, manifest, '--title', 'Karevo ' + a.version, '--latest'];
+  const feed = 'https://gitlab.com/' + a.repo + '/-/releases/permalink/latest/downloads/latest.json';
+  const releaseArgs = ['release', 'create', 'v' + a.version, target, manifest, '--repo', a.repo, '--name', 'Karevo ' + a.version];
   if (notes) releaseArgs.push('--notes-file', notes.absolute); else releaseArgs.push('--notes', 'Karevo ' + a.version + ' Windows güncellemesi.');
-  const output = { prepared: true, published: false, repo: a.repo, feed, files: [target, manifest], next: 'Dosyalar hazır. Yayımlamak için aynı komuta --publish ekleyin; gh hesabınızla oturum açılmış olmalı.' };
+  const output = { prepared: true, published: false, repo: a.repo, feed, files: [target, manifest], next: 'Dosyalar hazır. Yayımlamak için aynı komuta --publish ekleyin; glab ile GitLab hesabınızda oturum açılmış olmalı.' };
   log(JSON.stringify(output, null, 2));
   if (a.publish) {
-    result = run('gh', releaseArgs, { stdio: 'inherit', shell: false });
-    if (result.error) throw new Error('GitHub CLI bulunamadı. gh ile kendi hesabınızda oturum açın.');
-    if (result.status !== 0) throw new Error('GitHub yayını tamamlanamadı. Mevcut sürümü silmeden hatayı kontrol edin.');
+    result = run('glab', releaseArgs, { stdio: 'inherit', shell: false });
+    if (result.error) throw new Error('GitLab CLI (glab) bulunamadı. glab kurun ve glab auth login ile kendi GitLab hesabınızda oturum açın.');
+    if (result.status !== 0) throw new Error('GitLab yayını tamamlanamadı. Mevcut sürümü silmeden hatayı kontrol edin.');
     output.published = true; log(JSON.stringify({ published: true, repo: a.repo, feed }));
   }
   return output;
