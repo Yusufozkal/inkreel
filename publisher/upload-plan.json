@@ -1,0 +1,79 @@
+{
+  "schema": "bulten-release-upload-plan",
+  "schemaVersion": 1,
+  "repository": "Yusufozkal/bulten-guncellemeler",
+  "releaseId": 425451976,
+  "tag": "v3.2.1",
+  "installer": {
+    "fileName": "Bulten-Studio-3.2.1-Setup.exe",
+    "bytes": 104370511,
+    "sha256": "6612d0cfb5aefd805c971251ac17d5d36fed84b145f4325a8fb69831fc25a626"
+  },
+  "chunks": [
+    {
+      "sha": "7a7a216c5021db3a692b745b92d832929974ad6d",
+      "bytes": 8388608,
+      "sha256": "6fedf80cfc5800ae5b7ee6ae633ba43f9ea0b9181378d7a2b42d9b94d5d0b797"
+    },
+    {
+      "sha": "a4c41fc4f95b99e9a18ccae64cc334f5951d6d8a",
+      "bytes": 8388608,
+      "sha256": "27f09b15e7efdec18bd3ced2e21b6b1ec7558bcc424791afd53af42017851b73"
+    },
+    {
+      "sha": "de2954e02f1d90e3404e9d553dacdf3fabcc7015",
+      "bytes": 8388608,
+      "sha256": "017369b4db6869060084ee33e1d42ce77bbb31c1d0690cf8f1eb87744892d884"
+    },
+    {
+      "sha": "bbec4511155b338fb20856df52d2507f54cb392a",
+      "bytes": 8388608,
+      "sha256": "adeb709818ad692c5239888e678449ca800b55532e7589c98e0309b630097376"
+    },
+    {
+      "sha": "3904f9a5cdb6407dd3e76b74c540d025c3b4ebb7",
+      "bytes": 8388608,
+      "sha256": "30812945f0547fb0841fb18efa781f0745dfaac34f0e42d0e7561b2f7ebece1f"
+    },
+    {
+      "sha": "58d7501547e8b5be2a886c1fc528e94c5cfa3ba5",
+      "bytes": 8388608,
+      "sha256": "eb03eff8db2f64e884db24c2e1fe6b6c34ef80762de51a3b10753c38ab43748c"
+    },
+    {
+      "sha": "81a77d7ee31261766a8c3c5de18eac4147255545",
+      "bytes": 8388608,
+      "sha256": "e3101b6da2fa7f14fa8278ee0e614fe8d2fa8c81a4287ea0b4db68b421da890c"
+    },
+    {
+      "sha": "b006ae39c89d0c92a0d0760e0584ba73c7834730",
+      "bytes": 8388608,
+      "sha256": "5cf2feabf281e9ef7d5079cefd1f247469f96d3bb05b095fc576259211c48309"
+    },
+    {
+      "sha": "cb72ed195b8a1362049a596ff6d6a62298d5dc13",
+      "bytes": 8388608,
+      "sha256": "ddedb5e85b395f3c8c9eaf715369c8a8940f48bfa793cb84e12640f2ce848620"
+    },
+    {
+      "sha": "87928ff76c2cf4ea63c5fb15f7278762efbebc1d",
+      "bytes": 8388608,
+      "sha256": "2c855c2105dbe83799030428abe8f9d927caa276f37f48e3b64c7a9d1fc920af"
+    },
+    {
+      "sha": "7f7136ba6dc543dccc6f2234a9170c6e0f9fefbe",
+      "bytes": 8388608,
+      "sha256": "9a3e32ea2d61aabc8d9dedbe8872e213fae1540fcf478045319d407702d15703"
+    },
+    {
+      "sha": "665295aeef6107f9c8deec1c7e748eeee2b21df8",
+      "bytes": 8388608,
+      "sha256": "8cc3658f0b95b2c5a207dbf8ba68ad67129a5f6436794e908db9e7fe60a1eb27"
+    },
+    {
+      "sha": "9c42ddec52a92f6663b97493124b6f19646da5c1",
+      "bytes": 3707215,
+      "sha256": "03a416b2ad892eb247464f96ff15f53179cf60baac3e0a8b5dfd5924d8c46753"
+    }
+  ]
+}

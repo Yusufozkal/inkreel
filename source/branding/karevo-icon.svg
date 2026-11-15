@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">Karevo</title>
+  <desc id="description">Karevo uygulama simgesi: turkuaz kadraj içinde beyaz geometrik K harfi.</desc>
+  <rect width="512" height="512" rx="112" fill="#122236"/>
+  <g fill="none" stroke="#36d2b2" stroke-width="20" stroke-linecap="round">
+    <path d="M78 158V78h80"/>
+    <path d="M354 78h80v80"/>
+    <path d="M78 354v80h80"/>
+    <path d="M354 434h80v-80"/>
+  </g>
+  <path fill="#fff" d="M171 138h51v94l82-94h64l-101 113 106 123h-67l-84-99v99h-51z"/>
+</svg>

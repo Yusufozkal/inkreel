@@ -1,0 +1,45 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {boot,until}=require('./dom-harness.cjs');
+(async()=>{
+ let storedCore,failWrites=false;
+ const app=boot({setupWindow(w){Object.defineProperty(w,'StudioCore',{configurable:true,get:()=>storedCore,set(value){storedCore=Object.freeze({...value,openDatabase:async()=>{const db=await value.openDatabase();return {...db,put:async(key,record)=>{if(failWrites)throw Error('QA storage quota exhausted');return db.put(key,record);}};}});}});}});
+ const {w,$,input,click}=app;
+ try {
+  await w.StudioApp.ready;
+  input('headline','Kaydedilemeyen Android çalışması');
+  failWrites=true;
+  w.dispatchEvent(new w.CustomEvent('studio-before-close',{detail:{requestId:41}}));
+  await until(()=>app.calls.some(row=>row.method==='finishClose'),'failed-save acknowledgement');
+  const refused=app.calls.filter(row=>row.method==='finishClose').at(-1);
+  assert.equal(refused.saved,false);assert.equal(refused.requestId,41);
+  assert.match($('saveStatus').textContent,/Kaydedilemedi/);
+  assert.equal(w.StudioApp.getProject().boards[0].state.headline,'Kaydedilemeyen Android çalışması');
+  input('headline','Düzenleme ve dosya yedeği hâlâ mümkün');
+  click('saveProjectButton');
+  await until(()=>app.calls.some(row=>row.method==='saveProject'),'manual file backup after close refusal');
+  const exported=app.calls.filter(row=>row.method==='saveProject').at(-1);
+  assert.equal(w.StudioCore.parse(exported.json).boards[0].state.headline,'Düzenleme ve dosya yedeği hâlâ mümkün');
+  await new Promise(resolve=>setTimeout(resolve,50));
+  failWrites=false;
+  w.dispatchEvent(new w.CustomEvent('studio-before-close',{detail:{requestId:42}}));
+  await until(()=>app.calls.filter(row=>row.method==='finishClose').length===2,'successful-save retry');
+  const retry=app.calls.filter(row=>row.method==='finishClose').at(-1);
+  assert.equal(retry.saved,true);assert.equal(retry.requestId,42);
+  assert.equal(retry.completedWrite.value.project.boards[0].state.headline,'Düzenleme ve dosya yedeği hâlâ mümkün');
+  let canceled=0;
+  const beforeClip=w.StudioApp.getProject();
+  const release=w.StudioApp.beginExternalOperation('Video düzenleme',()=>{canceled++;});
+  assert.equal($('app').dataset.busy,'true');
+  assert.throws(()=>w.StudioApp.beginExternalOperation('İkinci işlem'),/Önce/);
+  w.dispatchEvent(new w.CustomEvent('studio-before-close',{detail:{requestId:43}}));
+  await until(()=>app.calls.filter(row=>row.method==='finishClose').length===3,'external video operation close refusal');
+  const external=app.calls.filter(row=>row.method==='finishClose').at(-1);
+  assert.equal(external.saved,false);assert.equal(external.requestId,43);assert.equal(canceled,1);
+  assert.equal($('app').dataset.busy,'true','The operation owner releases the editor after cancellation cleanup');
+  release();release();assert.equal($('app').dataset.busy,'false');
+  assert.deepEqual(w.StudioApp.getProject(),beforeClip);
+  assert.deepEqual(app.messages,[]);
+  console.log('Android failed autosave and active clip operations reject close with the correct request token; manual backup, cancellation cleanup and retry remain available (DOM; native host mocked).');
+ } finally {failWrites=false;await app.close();}
+})().catch(error=>{console.error(error);process.exitCode=1;});

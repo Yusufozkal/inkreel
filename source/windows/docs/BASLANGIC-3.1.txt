@@ -1,0 +1,18 @@
+BÜLTEN STUDIO 3.1.0 — WINDOWS
+
+1. Mevcut uygulamayı kapatın. Çalışmalarınızı Kaydet ile .bulten dosyası olarak saklayın.
+2. Bulten-Studio-3.1.0-Setup.exe dosyasını çalıştırın. Aynı Windows kullanıcı hesabına kurun.
+3. Güncellemeler için üst çubuktaki güncelleme simgesini veya Yardım menüsünü kullanın.
+4. GitHub yayın adresi hazır olduğunda Güncelleme ayarlarına depo bağlantısını bir kez kaydedin.
+5. Yeni sürüm bulunduğunda İndir; ardından Yeniden başlat ve güncelle düğmesini kullanın.
+
+3.0 sürümünde güncelleme istemcisi yoktur; 3.1 bir kez elle kurulmalıdır.
+Bu paket hazırlandığında GitHub hesabı/yayın adresi bağlantısı tamamlanmamıştır.
+İnternet olmadan tasarım yapılabilir. İndirme hatası mevcut sürümü değiştirmez.
+Kurulumdan önce açık projenin ayrı yedeği kullanıcı verileri içindeki update-backups klasörüne alınır.
+
+Windows kurucusunda ücretli yayıncı sertifikası yoktur; Windows uyarısı devam edebilir.
+Güncelleme doğrulama imzası, Windows yayıncı sertifikasından farklıdır.
+Kaynak ve otomatik testler doğrulandı; gerçek Windows kurulumu bu ortamda denenmedi.
+
+Yayıncı ayrıntıları: UPDATES-KULLANIM.md ve SIGNED-UPDATES.md.
