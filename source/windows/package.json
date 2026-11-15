@@ -1,0 +1,25 @@
+{
+  "name": "karevo",
+  "version": "3.2.3",
+  "description": "Bağımsız yayıncılar için çevrimdışı içerik stüdyosu",
+  "productName": "Karevo",
+  "author": "Karevo",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "native/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "test:native": "node --test scripts/*.test.cjs",
+    "build:win": "node scripts/package.cjs win32",
+    "build:linux": "node scripts/package.cjs linux",
+    "verify:win": "node scripts/verify-package.cjs",
+    "build": "npm run test:native && npm run build:win",
+    "build:runtime": "node scripts/package.cjs win32 --nozip",
+    "build:setup": "python3 installer/build-installer.py",
+    "verify:setup": "python3 installer/verify-installer.py"
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "electron": "44.9.3"
+  }
+}

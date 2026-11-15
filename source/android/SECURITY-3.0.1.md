@@ -1,0 +1,13 @@
+# Bülten Studio Android 3.0.1 security update
+
+This patch addresses compressed images in untrusted project files or imported photos that have a small file size but an excessive decoded raster size. A complete monochrome PNG measuring 16,384 × 16,384 pixels can fit in about 32 KB while a decoded RGBA surface requires approximately 1 GiB. Opening such a project previously submitted the image to the WebView decoder without checking intrinsic dimensions.
+
+PNG, JPEG and WebP headers are now checked before browser decoding. Animated PNG/WebP frame counts contribute to the pixel budget. A single image and the distinct images of a board may contain at most 48 million pixels; distinct images across the complete project, saved templates and brand profiles may contain at most 512 million pixels. Repeated references to the same embedded image count once. Image files use the same checks, including the FileReader fallback for WebViews without File.arrayBuffer.
+
+Image decoding is serialized across active-board and thumbnail work. The decoded-image cache is evicted by pixel budget before the next image is submitted to the decoder, with a 48-million-pixel budget and the existing 12-entry count limit. Image imports, brand application, saved-template use and CSV mutations validate their combined project before committing or roll back without changing history. Rejected projects do not replace the currently open work, and previously stored oversized projects are rejected during restoration.
+
+These controls bound the accepted dimensions and cache budget. Active canvases and caller-held image references also use memory, so this is not an absolute guarantee against memory exhaustion on every device. The parser inspects resource requirements; the browser decoder remains responsible for complete raster validation.
+
+Version 3.0.1 uses versionCode 30001. The package, provider authority, local storage and project schemas remain unchanged. The signed APK uses the original 3.0.0 signing certificate, publicly pinned by SHA-256 in qa/verify-apk.py. Release builds refuse to generate a replacement key. Signing material is excluded from source distributions.
+
+Validation includes Android Promise bridge checks, nine Android DOM checks, eight shared workflow checks, eight mobile wiring checks, compressed-image and format regressions, serialized decoding/cache eviction checks, signed APK verification, exact packaged web-asset comparison and 16 KiB alignment checks. Test attack rasters are rejected before decoding. The JavaScript tests use jsdom, Napi Canvas and a mocked Java boundary. No physical Android device or emulator, native gallery/share picker, actual WebView layout or device video codec was exercised.

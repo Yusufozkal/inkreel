@@ -1,0 +1,31 @@
+{
+  "name": "karevo-qa",
+  "version": "3.2.3",
+  "private": true,
+  "description": "Desktop editor DOM integration checks; native bridge mocked, no browser or Windows automation.",
+  "scripts": {
+    "test": "npm run test:core && npm run test:renderer && npm run test:workflow && npm run test:video && npm run test:dom && npm run test:ui-workflows && npm run test:updates && npm run test:security && npm run test:editor-regressions && npm run test:clip-engine && npm run test:clip-ui && npm run test:timeline",
+    "test:core": "node core-check.cjs",
+    "test:renderer": "node renderer-check.cjs",
+    "test:dom": "node dom-check.cjs",
+    "test:single-html": "node single-html-check.cjs",
+    "test:workflow": "node workflow-check.cjs",
+    "test:video": "node video-check.cjs",
+    "test:ui-workflows": "node ui-workflow-check.cjs",
+    "test:updates": "node update-ui-check.cjs",
+    "test:security": "node security-check.cjs",
+    "test:editor-regressions": "node editor-regression-check.cjs",
+    "test:clip-engine": "node clip-engine-check.cjs",
+    "test:clip-ui": "node clip-ui-check.cjs",
+    "test:clip-real-browser": "node clip-real-browser-check.cjs",
+    "test:timeline": "node timeline-check.cjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "1.0.11",
+    "fake-indexeddb": "6.2.6",
+    "jsdom": "22.1.0"
+  }
+}

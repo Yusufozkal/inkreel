@@ -1,0 +1,72 @@
+name: Karevo source checks
+
+on:
+  push:
+    paths:
+      - 'source/**'
+      - '.github/workflows/source-checks.yml'
+  pull_request:
+    paths:
+      - 'source/**'
+      - '.github/workflows/source-checks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            source/windows/package-lock.json
+            source/windows/qa/package-lock.json
+      - name: Check source inventory
+        run: python3 source/tools/check-source.py
+      - run: npm ci
+        working-directory: source/windows
+      - run: npm ci
+        working-directory: source/windows/qa
+      - run: npm run test:native
+        working-directory: source/windows
+      - run: npm test
+        working-directory: source/windows/qa
+      - name: Build and verify the self-contained browser edition
+        working-directory: source/windows
+        run: |
+          node scripts/package-browser.cjs
+          node qa/single-html-check.cjs dist/Karevo.html
+
+  android-source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: source/android/qa/package-lock.json
+      - run: npm ci
+        working-directory: source/android/qa
+      - run: npm test
+        working-directory: source/android/qa
+      - name: Compile Android without a private signing key
+        shell: bash
+        run: |
+          export KAREVO_JAVA_HOME="${JAVA_HOME_21_X64:-$JAVA_HOME}"
+          export KAREVO_ANDROID_SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          "$KAREVO_ANDROID_SDK/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-35' 'build-tools;35.0.0'
+          bash source/android/build-apk.sh --compile-only

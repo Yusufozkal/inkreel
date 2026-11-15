@@ -1,0 +1,12 @@
+Bülten Studio 3.1.0 — Windows
+
+• Mağaza dışında, Ed25519 imzasıyla doğrulanan güncellemeler.
+• GitHub depo bağlantısı veya HTTPS güncelleme adresi kaydetme.
+• İsteğe bağlı günlük sürüm denetimi; indirme ve kurulum kullanıcı tarafından başlatılır.
+• İndirme ilerlemesi, sürüm notları ve başarısız işlemden sonra yeniden deneme.
+• Kurulumdan önce açık projenin otomatik kaydı ve ayrı .bulten yedeği.
+• Mevcut uygulama kimliği ve proje biçimi korunur.
+
+3.0'dan geçişte bu sürümün kurucusu bir kez elle kurulmalıdır.
+Güncelleme yayın adresi ve yayın anahtarı yedeği tamamlanmadan canlı güncelleme hizmeti etkin değildir.
+Bu imza Windows yayıncı sertifikası değildir; SmartScreen uyarısı devam edebilir.

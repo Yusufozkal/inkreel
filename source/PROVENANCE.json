@@ -1,0 +1,22 @@
+{
+  "sourceImportDate": "2026-11-15",
+  "baselineRelease": "https://github.com/Yusufozkal/karevo/releases/tag/karevo-v3.2.3-preview",
+  "platforms": [
+    {
+      "platform": "windows",
+      "version": "3.2.3",
+      "sourceArchive": "Karevo-3.2.3-Windows-Kaynak.zip",
+      "sourceArchiveSha256": "8e755ce1eda77900caf01371e68b49294c9024b3cf45ceacd2378aaaec8aeee6",
+      "unchangedRuntimeFiles": 33
+    },
+    {
+      "platform": "android",
+      "version": "3.1.3",
+      "sourceArchive": "Karevo-3.1.3-Android-Kaynak.zip",
+      "sourceArchiveSha256": "41eee31a0d0a624029861039a511c7eadf2cdd2e8ff28ef19ae69e09eb8e8161",
+      "unchangedRuntimeFiles": 40
+    }
+  ],
+  "changes": "Source layout, portable build tool selection, icon generator and standalone browser icon embedding; installed application runtime sources unchanged.",
+  "privateSigningMaterialIncluded": false
+}

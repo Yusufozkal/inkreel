@@ -5,7 +5,7 @@
 
   Haber görsellerinden kısa videolara, sosyal medya içeriklerini tek bir çalışma alanında hazırla.
 
-  [**⬇ Windows için indir · 3.2.3**](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.2.3-Setup.exe) &nbsp; · &nbsp; [**⬇ Android için indir · 3.1.3**](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.1.3-Android.apk) &nbsp; · &nbsp; [Sürüm bilgileri](https://github.com/Yusufozkal/karevo/releases/tag/karevo-v3.2.3-preview) &nbsp; · &nbsp; [Kurulum](#kurulum) &nbsp; · &nbsp; [Güncellemeler](#güncellemeler)
+  [**⬇ Windows için indir · 3.2.3**](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.2.3-Setup.exe) &nbsp; · &nbsp; [**⬇ Android için indir · 3.1.3**](https://github.com/Yusufozkal/karevo/releases/download/karevo-v3.2.3-preview/Karevo-3.1.3-Android.apk) &nbsp; · &nbsp; [Sürüm bilgileri](https://github.com/Yusufozkal/karevo/releases/tag/karevo-v3.2.3-preview) &nbsp; · &nbsp; [Kurulum](#kurulum) &nbsp; · &nbsp; [Güncellemeler](#güncellemeler) &nbsp; · &nbsp; [Kaynak kodu](source/README.md)
 
   Windows 10 / 11 · 64 bit &nbsp; • &nbsp; Android 8+ &nbsp; • &nbsp; Manuel kurulum
 </div>
@@ -68,7 +68,7 @@ Otomatik denetim açıksa uygulama imzalı kanalda yayımlanan sürümleri kontr
 
 [Karevo 3.2.3 sürümünü görüntüle](https://github.com/Yusufozkal/karevo/releases/tag/karevo-v3.2.3-preview) · [Tüm sürümler](https://github.com/Yusufozkal/karevo/releases)
 
-Bu depo Karevo Windows ve Android kurucularının dağıtımı içindir; uygulamanın kaynak kodu burada yayımlanmaz.
+Windows ve Android kaynakları, testler ve derleme talimatları artık [Kaynak kodu](source/README.md) bölümündedir. Kurulum dosyaları Releases bölümünde, güncelleme dağıtımı aynı adreste korunur.
 
 <details>
 <summary>Önceki sürümler ve mevcut projelerle uyumluluk</summary>

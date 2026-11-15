@@ -1,0 +1,37 @@
+/* Karevo phone navigation; project content stays in the shared editor. */
+(function(global){
+'use strict';
+const $=id=>document.getElementById(id),app=$('app'),buttons=[...document.querySelectorAll('[data-mobile-page]')];
+let page='canvas',shareBusy=false,pinch=null;const pointers=new Map();
+const isPhone=()=>global.innerWidth<=1000;
+function notice(text){const el=$('toast');el.textContent=text;el.classList.add('visible');clearTimeout(notice.timer);notice.timer=setTimeout(()=>el.classList.remove('visible'),4200);}
+function viewport(){document.documentElement.style.setProperty('--app-height',global.innerHeight+'px');if(!isPhone())app.dataset.mobilePanel='none';}
+function setPage(value){page=value;for(const button of buttons){const selected=button.dataset.mobilePage===value;button.classList.toggle('active',selected);button.setAttribute('aria-pressed',String(selected));}}
+function closePanel(){app.dataset.mobilePanel='none';if(document.activeElement&&document.activeElement!==document.body)document.activeElement.blur();setPage('canvas');}
+function openPage(value){if(app.dataset.busy==='true'||shareBusy)return;if(value==='canvas'){closePanel();return;}if(['templates','media','brands','projects'].includes(value)){document.querySelector('[data-library="'+value+'"]').click();app.dataset.mobilePanel='library';setPage(value);return;}if(['edit','post','layers'].includes(value)){document.querySelector('[data-inspector="'+(value==='edit'?'news':value)+'"]').click();app.dataset.mobilePanel='inspector';setPage(value==='layers'?'edit':value);}}
+function openMenu(){if(app.dataset.busy==='true'||shareBusy)return;$('mobileProjectName').value=$('projectName').value;$('mobileMenuDialog').showModal();}
+for(const button of buttons)button.onclick=()=>{if(page===button.dataset.mobilePage&&app.dataset.mobilePanel!=='none')closePanel();else openPage(button.dataset.mobilePage);};
+$('mobilePanelClose').onclick=closePanel;$('mobileScrim').onclick=closePanel;$('mobileMenuButton').onclick=openMenu;
+for(const tab of document.querySelectorAll('[data-library]'))tab.addEventListener('click',()=>{if(isPhone()&&app.dataset.mobilePanel==='library')setPage(tab.dataset.library);});
+for(const tab of document.querySelectorAll('[data-inspector]'))tab.addEventListener('click',()=>{if(isPhone()&&app.dataset.mobilePanel==='inspector')setPage(tab.dataset.inspector==='post'?'post':'edit');});
+for(const id of ['goLayersButton','addTextQuick','addShapeQuick'])$(id).addEventListener('click',()=>{if(isPhone())openPage('layers');});
+$('mobileUndoButton').onclick=()=>$('undoButton').click();$('mobileRedoButton').onclick=()=>$('redoButton').click();
+function syncHistory(){for(const action of ['Undo','Redo'])$('mobile'+action+'Button').disabled=$(action.toLowerCase()+'Button').disabled;}
+const historyObserver=new MutationObserver(syncHistory);for(const id of ['undoButton','redoButton'])historyObserver.observe($(id),{attributes:true,attributeFilter:['disabled']});syncHistory();
+$('mobileProjectName').addEventListener('input',()=>{$('projectName').value=$('mobileProjectName').value;$('projectName').dispatchEvent(new Event('input',{bubbles:true}));});$('mobileProjectName').addEventListener('blur',()=>$('projectName').dispatchEvent(new Event('blur')));
+async function shareImage(){if(shareBusy||app.dataset.busy==='true')return;if(!global.StudioDesktop?.shareImage){notice('Paylaşım için Android uygulamasını kullanın.');return;}shareBusy=true;app.dataset.busy='true';$('busyTitle').textContent='Paylaşılacak görsel hazırlanıyor…';$('busyMessage').textContent='Android paylaşım menüsü açılacak.';$('busyDialog').showModal();let canvas;
+try{await global.StudioApp.ready;await document.fonts.ready;const project=global.StudioApp.getProject(),board=project.boards.find(b=>b.id===project.activeId)||project.boards[0],media=await global.StudioCore.loadMedia(board);if(media.errors.length)throw Error(media.errors[0].message);canvas=document.createElement('canvas');const result=global.DesktopRenderer.render(canvas,board,media);if(result.overflow||result.layerOverflow)throw Error('Başlık veya katman metni sığmıyor. Önce tasarımı düzenleyin.');const dataUrl=canvas.toDataURL('image/png');const filename='karevo-'+board.state.format+'.png';const saved=await global.StudioDesktop.shareImage(dataUrl,filename);if(saved.canceled)return;if(!saved.ok)throw Error(saved.error||'Görsel paylaşılamadı.');notice('Paylaşım menüsü açıldı.');}catch(error){notice(error.message||'Görsel paylaşılamadı.');}finally{if(canvas)canvas.width=canvas.height=1;shareBusy=false;app.dataset.busy='false';$('busyDialog').close();}}
+const actions={share:shareImage,clip:()=>$('clipButton')?.click(),video:()=>$('videoButton').click(),plan:()=>$('planButton').click(),grid:()=>$('gridPreviewButton').click(),csv:()=>$('csvButton').click(),projects:()=>openPage('projects'),new:()=>{$('newProjectButton').click();closePanel();},help:()=>$('helpButton').click()};
+for(const button of document.querySelectorAll('[data-mobile-action]'))button.onclick=()=>{$('mobileMenuDialog').close();const action=actions[button.dataset.mobileAction];if(action)action();};
+// Preserve the native Back button for sheets and dialogs before leaving the editor.
+global.StudioHandleBack=function(){if(global.StudioClipUI?.handleBack())return true;if(app.dataset.busy==='true'||shareBusy){if(!$('cancelVideoButton').classList.contains('hidden'))$('cancelVideoButton').click();return true;}const dialogs=[...document.querySelectorAll('dialog[open]')];if(dialogs.length){dialogs.at(-1).close();return true;}if(app.dataset.mobilePanel!=='none'){closePanel();return true;}return false;};
+// Two-finger crop uses the same zoom control/history as the slider.
+const canvas=$('artCanvas');
+function cropDown(event){if(!Number.isFinite(event.pointerId)||$('canvasWrap').dataset.tool!=='crop'||app.dataset.busy==='true')return;pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});if(pointers.size===2){event.preventDefault();event.stopImmediatePropagation();canvas.dispatchEvent(new Event('pointercancel'));const [a,b]=[...pointers.values()];pinch={distance:Math.max(1,Math.hypot(a.x-b.x,a.y-b.y)),zoom:Number($('photoZoom').value)};try{canvas.setPointerCapture(event.pointerId);}catch(_){}}}
+function cropMove(event){if(!pointers.has(event.pointerId))return;pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});if(!pinch||pointers.size<2)return;event.preventDefault();event.stopImmediatePropagation();const [a,b]=[...pointers.values()],zoom=Math.round(Math.max(25,Math.min(600,pinch.zoom*Math.hypot(a.x-b.x,a.y-b.y)/pinch.distance)));$('photoZoom').value=zoom;$('photoZoom').dispatchEvent(new Event('input',{bubbles:true}));}
+function cropEnd(event){if(!Number.isFinite(event.pointerId))return;pointers.delete(event.pointerId);if(pinch){event.stopImmediatePropagation();pinch=null;$('photoZoom').dispatchEvent(new Event('blur'));}if(!pointers.size)pinch=null;}
+canvas.addEventListener('pointerdown',cropDown,true);canvas.addEventListener('pointermove',cropMove,true);for(const name of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(name,cropEnd,true);
+global.addEventListener('resize',viewport);if(global.visualViewport)global.visualViewport.addEventListener('resize',viewport);viewport();
+const ready=global.StudioApp.ready.then(()=>{syncHistory();$('stageHint').textContent='Kadraj: sürükle / iki parmak · Düzenle: alt menü';setPage('canvas');});
+global.StudioMobile=Object.freeze({ready,openPage,closePanel,openMenu,getPage:()=>page});
+})(window);
