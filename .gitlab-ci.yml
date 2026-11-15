@@ -5,6 +5,7 @@
 
 workflow:
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api"'
     - if: '$CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
         - source/**/*
@@ -15,7 +16,7 @@ default:
   timeout: 15 minutes
 
 windows-source:
-  image: node:22
+  image: node:22-bookworm
   variables:
     ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
   cache:
@@ -35,7 +36,10 @@ windows-source:
     - node qa/single-html-check.cjs dist/Karevo.html
 
 android-source:
-  image: node:22
+  image: node:22-bookworm
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq default-jdk-headless
+    - export JAVA_HOME="$(dirname "$(dirname "$(readlink -f "$(command -v javac)")")")"
   cache:
     key: android-npm
     paths:
