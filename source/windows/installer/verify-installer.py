@@ -72,7 +72,16 @@ for entry in manifest:
     assert len(exact) == 1, 'Packaged payload mismatch: ' + entry['path']
     matched.append(entry['path'])
     matched_extracted.add(exact[0])
+# install.nsi writes exactly one uninstaller (WriteUninstaller "$INSTDIR\\Uninstall.exe").
+# Depending on the NSIS/7-Zip versions, 7-Zip may list it as an extracted file; accept only that
+# exact root path, and only if it is a Windows executable.
+def expected_uninstaller(item):
+    if item.relative_to(extracted).as_posix() != 'Uninstall.exe':
+        return False
+    with item.open('rb') as handle:
+        return handle.read(2) == b'MZ'
 assert all(item in matched_extracted or item.relative_to(extracted).as_posix().startswith('$PLUGINSDIR/')
+           or expected_uninstaller(item)
            for item in all_files), 'Installer contains unexpected installed files'
 
 installed_paths = {entry['path'] for entry in manifest}

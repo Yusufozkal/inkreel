@@ -1,6 +1,6 @@
 {
   "schema": "bulten-update-public-key",
   "algorithm": "Ed25519",
-  "keyId": "ed25519:c5584085b0c35f1c2bf52142e322236f",
-  "publicKey": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAV4/+km9+D2zstGBTnfn180d6Ex6c2nLGW75OiVeqCP8=\n-----END PUBLIC KEY-----\n"
+  "keyId": "ed25519:17a876fe9ae838d3d31b2cf36a8f66cd",
+  "publicKey": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAvyy118lN8j1RpfTlUIsw0JkvSj1Y6scpu+s7MBm7JjE=\n-----END PUBLIC KEY-----\n"
 }
