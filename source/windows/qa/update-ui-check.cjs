@@ -10,12 +10,12 @@ const report={environment:'jsdom22 + real Napi Canvas + fake-indexeddb; native u
 function check(name){report.checks.push(name);console.log('PASS:',name);}
 function deferred(){let resolve;const promise=new Promise(done=>resolve=done);return{promise,resolve};}
 function installNativeMock(w,context){
- const state={status:'idle',currentVersion:'3.3.0',latestVersion:null,notes:'',progress:0,feedUrl:'',autoCheck:true,configured:false,lastCheckedAt:null,error:null,downloadBytes:0,totalBytes:0};
+ const state={status:'idle',currentVersion:'3.3.1',latestVersion:null,notes:'',progress:0,feedUrl:'',autoCheck:true,configured:false,lastCheckedAt:null,error:null,downloadBytes:0,totalBytes:0};
  const controls={state,calls:context.calls,configureError:null,checkError:null,downloadTask:null,installTask:null};
  controls.emit=patch=>{Object.assign(state,patch);w.dispatchEvent(new w.CustomEvent('studio-update-state',{detail:copy(state)}));};
  const outcome=()=>({ok:true,state:copy(state)});
  Object.assign(w.StudioDesktop,{
-  getInfo:async()=>({platform:'win32',version:'3.3.0',updateCapable:true}),
+  getInfo:async()=>({platform:'win32',version:'3.3.1',updateCapable:true}),
   getUpdateState:async()=>{context.calls.push({method:'getUpdateState'});return outcome();},
   configureUpdates:async config=>{
    context.calls.push({method:'configureUpdates',config:copy(config)});
@@ -26,7 +26,7 @@ function installNativeMock(w,context){
   checkForUpdates:async()=>{
    context.calls.push({method:'checkForUpdates'});controls.emit({status:'checking',error:null});
    if(controls.checkError){controls.emit({status:'error',error:controls.checkError});return{ok:false,error:controls.checkError,state:copy(state)};}
-   controls.emit({status:'available',latestVersion:'3.3.0',notes:'Yeni şablonlar\nDaha hızlı kayıt',lastCheckedAt:'2026-10-20T12:00:00.000Z',progress:0});return outcome();
+   controls.emit({status:'available',latestVersion:'3.3.2',notes:'Yeni şablonlar\nDaha hızlı kayıt',lastCheckedAt:'2026-10-20T12:00:00.000Z',progress:0});return outcome();
   },
   downloadUpdate:async()=>{
    context.calls.push({method:'downloadUpdate'});controls.emit({status:'downloading',progress:.25,downloadBytes:2500,totalBytes:10000});
@@ -50,7 +50,7 @@ async function main(){
  const project=()=>plain(w.StudioApp.getProject());
  const invokeCount=method=>controls.calls.filter(call=>call.method===method).length;
  await w.StudioApp.ready;await until(()=>invokeCount('getUpdateState')>0,'initial updater state');
- assert.equal(w.StudioApp.version,'3.3.0');assert.equal(w.StudioCore.VERSION,3);
+ assert.equal(w.StudioApp.version,'3.3.1');assert.equal(w.StudioCore.VERSION,3);
  click(IDS.button);await until(()=>$(IDS.dialog).open,'open updates dialog');
  assert.match($(IDS.status).textContent,/kaynağı henüz ayarlanmadı/);
  assert.equal($(IDS.check).disabled,true);assert.equal($('updateSourceDetails').open,true);
@@ -83,7 +83,7 @@ async function main(){
  assert.equal($(IDS.check).disabled,false,'Offline checks can be retried');
  controls.checkError=null;click(IDS.check);
  await until(()=>controls.state.status==='available'&&!$(IDS.download).disabled,'signed release available');
- assert.match($(IDS.status).textContent,/Yeni sürüm/);assert.match($('updateVersion').textContent,/3\.3\.0/);
+ assert.match($(IDS.status).textContent,/Yeni sürüm/);assert.match($('updateVersion').textContent,/3\.3\.2/);
  assert.equal($(IDS.notes).textContent,'Yeni şablonlar\nDaha hızlı kayıt');
  controls.emit({notes:'<img src=x onerror=alert(1)> **Yalnız düz metin**'});
  assert.equal($(IDS.notes).querySelector('img'),null);assert.match($(IDS.notes).textContent,/<img/);
