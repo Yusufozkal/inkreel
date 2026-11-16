@@ -1,6 +1,6 @@
 # Inkreel kaynak kodu
 
-Windows 3.3.0 ve Android 3.3.0 uygulamalarının kaynakları, tasarım varlıkları, testleri ve derleme araçları bu klasördedir. İndirme ve güncelleme adresleri aynı depoda korunur; derlenmiş uygulamalar [Releases](https://gitlab.com/Turkish_Vito/inkreel/-/releases/karevo-v3.2.3-preview) bölümündedir.
+Windows 3.3.1 ve Android 3.3.0 uygulamalarının kaynakları, tasarım varlıkları, testleri ve derleme araçları bu klasördedir. İndirme ve güncelleme adresleri aynı depoda korunur; derlenmiş uygulamalar [Releases](https://gitlab.com/Turkish_Vito/inkreel/-/releases/karevo-v3.2.3-preview) bölümündedir.
 
 | Klasör | İçerik |
 | --- | --- |
@@ -63,7 +63,7 @@ npm --prefix qa test
 
 ## Güncelleme ve veri uyumluluğu
 
-`publisher/` ve imzalı Windows güncelleme dosyaları depo kökünde kalır. Kaynak kodu eklemek bu dosyaları, sürüm varlıklarını veya `releases/latest/download/latest.json` adresini değiştirmez. Inkreel Windows 3.3.0 ve Android 3.3.0 elle kurulur; Android'de Karevo uygulamasının yanında yeni bir uygulama olarak kurulur (eski imza anahtarı kayıp). Projeleri Karevo içinde kaydedip Inkreel içinde açın.
+`publisher/` ve imzalı Windows güncelleme dosyaları depo kökünde kalır. Kaynak kodu eklemek bu dosyaları, sürüm varlıklarını veya `releases/latest/download/latest.json` adresini değiştirmez. Inkreel Windows 3.3.1 ve Android 3.3.0 elle kurulur; Android'de Karevo uygulamasının yanında yeni bir uygulama olarak kurulur (eski imza anahtarı kayıp). Projeleri Karevo içinde kaydedip Inkreel içinde açın.
 
 Windows'un eski kullanıcı veri yolu, yerel protokolü, proje şeması ve güncelleme açık anahtarı korunur. Android kimliği `com.inkreel.studio` olup önceki uygulamadan ayrı kurulur. Yeni kayıtlar `.inkreel`; önceki `.karevo`, `.bulten` ve `.netice` projeleri açılabilir.
 
