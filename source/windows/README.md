@@ -1,4 +1,4 @@
-# Karevo 3.2.3
+# Karevo 3.2.4
 
 Yayıncılar ve sosyal medya editörleri için Türkçe, çevrimdışı içerik atölyesi. Windows masaüstü uygulaması ve kurulumsuz HTML sürümü aynı proje biçimini kullanır.
 

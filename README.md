@@ -5,9 +5,9 @@
 
   Haber görsellerinden kısa videolara, sosyal medya içeriklerini tek bir çalışma alanında hazırla.
 
-  ### [⬇ Windows için indir · 3.2.3](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.2.3-Setup.exe) &nbsp;&nbsp;&nbsp; [⬇ Android için indir · 3.1.3](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.1.3-Android.apk)
+  ### [⬇ Windows için indir · 3.2.4](https://gitlab.com/Turkish_Vito/karevo/-/releases/v3.2.4/downloads/Karevo-3.2.4-Setup.exe) &nbsp;&nbsp;&nbsp; [⬇ Android için indir · 3.1.3](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.1.3-Android.apk)
 
-  [Sürüm bilgileri](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview) · [Kurulum](#kurulum) · [Güncellemeler](#güncellemeler) · [Kaynak kodu](source/README.md)
+  [Sürüm bilgileri](https://gitlab.com/Turkish_Vito/karevo/-/releases/v3.2.4) · [Kurulum](#kurulum) · [Güncellemeler](#güncellemeler) · [Kaynak kodu](source/README.md)
 
   Windows 10 / 11 · 64 bit &nbsp; • &nbsp; Android 8+ &nbsp; • &nbsp; Manuel kurulum
 </div>
@@ -35,15 +35,15 @@ Video düzenleyici tek kliple çalışır. Kaynak video en fazla 5 dakika ve 120
 
 **Windows**
 
-1. [Karevo Windows kurucusunu indir](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.2.3-Setup.exe).
-2. İndirilen `Karevo-3.2.3-Setup.exe` dosyasını aç ve kurulum adımlarını izle.
+1. [Karevo Windows kurucusunu indir](https://gitlab.com/Turkish_Vito/karevo/-/releases/v3.2.4/downloads/Karevo-3.2.4-Setup.exe).
+2. İndirilen `Karevo-3.2.4-Setup.exe` dosyasını aç ve kurulum adımlarını izle.
 3. Uygulamayı aç, bir şablon seç ve ilk tasarımını oluştur.
 
 **Gereksinim:** Windows 10 veya Windows 11, 64 bit. Kurulumdan önce mevcut çalışmalarını proje dosyası olarak yedekle.
 
 **Android**
 
-[Karevo Android APK’sını indir](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.1.3-Android.apk), dosyayı aç ve kurulum adımlarını izle. Android 8 veya üzeri gerekir. Güncel Android sürümü 3.1.3’tür ve Windows 3.2.3 ile aynı sürüm sayfasında yayımlanır. Karevo yeni, bağımsız bir uygulama olarak eski sürümün yanında kurulur. Eski uygulamadaki çalışmalarını proje dosyası olarak dışa aktararak Karevo’da açabilirsin.
+[Karevo Android APK’sını indir](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview/downloads/Karevo-3.1.3-Android.apk), dosyayı aç ve kurulum adımlarını izle. Android 8 veya üzeri gerekir. Güncel Android sürümü 3.1.3’tür ve [3.2.3 sürüm sayfasında](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview) yayımlanır. Karevo yeni, bağımsız bir uygulama olarak eski sürümün yanında kurulur. Eski uygulamadaki çalışmalarını proje dosyası olarak dışa aktararak Karevo’da açabilirsin.
 
 **Projeler:** Yeni kayıtlar `.karevo` uzantısını kullanır. Eski `.bulten` ve `.netice` projeleri de açılabilir.
 
@@ -56,25 +56,23 @@ Kurucu henüz Windows yayıncı sertifikasıyla imzalanmadığı için Microsoft
 
 ## Güncellemeler
 
-Karevo 3.2.3 şu anda manuel kurulumla sunuluyor; yukarıdaki kurucuyu indirerek kurabilirsin. Bu sürüm otomatik güncelleme kanalına eklenmedi. Android sürümü de bu sayfadaki APK ile elle güncellenir.
-
-Uygulamanın **Güncellemeler → Güncelleme ayarları** bölümüne bu adresi olduğu gibi yapıştır:
+**3.2.4 ve sonrası otomatik güncellenir.** Uygulamanın **Güncellemeler → Güncelleme ayarları** bölümüne şunu yaz ve kaydet:
 
 ```text
-https://gitlab.com/Turkish_Vito/karevo/-/releases/permalink/latest/downloads/latest.json
+Turkish_Vito/karevo
 ```
 
-Kısa yazımı (`Turkish_Vito/karevo`) ya da yalnızca proje adresini kullanma; 3.2.3 ve önceki sürümler bunları GitLab için doğru adrese çeviremez.
+Otomatik denetim açıksa uygulama yeni sürümleri GitLab'dan kontrol eder; indirme ve kurulumu sen başlatırsın. Güncelleme bilgileri Ed25519 imzasıyla doğrulanır (anahtar kimliği `ed25519:17a876fe9ae838d3d31b2cf36a8f66cd`); indirilen kurucunun boyutu ve dosya özeti kontrol edilir. Bu doğrulama, Windows yayıncı sertifikasının yerini almaz.
 
-> **Proje GitHub'dan GitLab'a taşındı.** Güncelleme adresi olarak eski GitHub adresini kaydettiysen, uygulama artık yeni sürüm bulamaz. **Güncellemeler → Güncelleme ayarları** bölümünde adresi bir kez yukarıdaki adresle değiştir.
+**3.2.3 veya daha eski bir sürüm kullanıyorsan, 3.2.4'ü bir kez elle kur.** Proje GitHub'dan GitLab'a taşınırken güncellemeleri imzalayan eski anahtar da değişti; eski sürümler yeni güncellemeleri tanımaz. Yukarıdaki indirme bağlantısıyla 3.2.4'ü kurman yeterli; projelerin ve ayarların korunur.
 
-GitLab proje adresi yeni istemcilerde ayarlanabilir; bu işlem tek başına çalışan bir otomatik güncelleme yayını oluşturmaz. Eski imzalı metadata içindeki GitHub kurucu adresleri özel anahtar olmadan değiştirilemez. Yeni imzalı yayın hazırlanırken mevcut sürümler elle kurulur. Güncelleme bilgileri imza ile doğrulanır; indirilen kurucunun boyutu ve dosya özeti kontrol edilir. Bu doğrulama, Windows yayıncı sertifikasının yerini almaz.
+Android sürümü bu sayfadaki APK ile elle güncellenir.
 
 ## Sürümler ve arşiv
 
-[Karevo 3.2.3 sürümünü görüntüle](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview) · [Tüm sürümler](https://gitlab.com/Turkish_Vito/karevo/-/releases)
+[Karevo 3.2.4 sürümünü görüntüle](https://gitlab.com/Turkish_Vito/karevo/-/releases/v3.2.4) · [Tüm sürümler](https://gitlab.com/Turkish_Vito/karevo/-/releases)
 
-Windows ve Android kaynakları, testler ve derleme talimatları artık [Kaynak kodu](source/README.md) bölümündedir. Windows ve Android kurucuları GitLab Releases bölümündedir; indirme bağlantıları ve dosya özetleri doğrulanmıştır. İmzalı otomatik güncelleme kanalının yeni adrese taşınması ayrıca tamamlanmalıdır.
+Windows ve Android kaynakları, testler ve derleme talimatları artık [Kaynak kodu](source/README.md) bölümündedir. Windows ve Android kurucuları GitLab Releases bölümündedir; indirme bağlantıları ve dosya özetleri doğrulanmıştır. İmzalı otomatik güncelleme kanalı 3.2.4 ile GitLab'da çalışıyor.
 
 <details>
 <summary>Önceki sürümler ve mevcut projelerle uyumluluk</summary>

@@ -1,6 +1,6 @@
 {
   "name": "karevo-qa",
-  "version": "3.2.3",
+  "version": "3.2.4",
   "private": true,
   "description": "Desktop editor DOM integration checks; native bridge mocked, no browser or Windows automation.",
   "scripts": {

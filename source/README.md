@@ -1,6 +1,6 @@
 # Karevo kaynak kodu
 
-Windows 3.2.3 ve Android 3.1.3 uygulamalarının kaynakları, tasarım varlıkları, testleri ve derleme araçları bu klasördedir. İndirme ve güncelleme adresleri aynı depoda korunur; derlenmiş uygulamalar [Releases](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview) bölümündedir.
+Windows 3.2.4 ve Android 3.1.3 uygulamalarının kaynakları, tasarım varlıkları, testleri ve derleme araçları bu klasördedir. İndirme ve güncelleme adresleri aynı depoda korunur; derlenmiş uygulamalar [Releases](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview) bölümündedir.
 
 | Klasör | İçerik |
 | --- | --- |
