@@ -58,13 +58,15 @@ Kurucu henüz Windows yayıncı sertifikasıyla imzalanmadığı için Microsoft
 
 Karevo 3.2.3 şu anda manuel kurulumla sunuluyor; yukarıdaki kurucuyu indirerek kurabilirsin. Bu sürüm otomatik güncelleme kanalına eklenmedi. Android sürümü de bu sayfadaki APK ile elle güncellenir.
 
-Uygulamanın **Güncellemeler → Güncelleme ayarları** bölümünde kullanılabilecek proje adresi:
+Uygulamanın **Güncellemeler → Güncelleme ayarları** bölümüne bu adresi olduğu gibi yapıştır:
 
 ```text
-https://gitlab.com/Turkish_Vito/karevo
+https://gitlab.com/Turkish_Vito/karevo/-/releases/permalink/latest/downloads/latest.json
 ```
 
-> **Proje GitHub'dan GitLab'a taşındı.** Güncelleme adresi olarak eski GitHub adresini kaydettiysen, uygulama artık yeni sürüm bulamaz. **Güncellemeler → Güncelleme ayarları** bölümünde adresi bir kez yukarıdaki GitLab adresiyle değiştir.
+Kısa yazımı (`Turkish_Vito/karevo`) ya da yalnızca proje adresini kullanma; 3.2.3 ve önceki sürümler bunları GitLab için doğru adrese çeviremez.
+
+> **Proje GitHub'dan GitLab'a taşındı.** Güncelleme adresi olarak eski GitHub adresini kaydettiysen, uygulama artık yeni sürüm bulamaz. **Güncellemeler → Güncelleme ayarları** bölümünde adresi bir kez yukarıdaki adresle değiştir.
 
 GitLab proje adresi yeni istemcilerde ayarlanabilir; bu işlem tek başına çalışan bir otomatik güncelleme yayını oluşturmaz. Eski imzalı metadata içindeki GitHub kurucu adresleri özel anahtar olmadan değiştirilemez. Yeni imzalı yayın hazırlanırken mevcut sürümler elle kurulur. Güncelleme bilgileri imza ile doğrulanır; indirilen kurucunun boyutu ve dosya özeti kontrol edilir. Bu doğrulama, Windows yayıncı sertifikasının yerini almaz.
 
