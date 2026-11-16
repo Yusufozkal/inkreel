@@ -1,4 +1,4 @@
-# Karevo source checks (GitLab CI equivalent of the former GitHub Actions workflow).
+# Inkreel source checks (GitLab CI equivalent of the former GitHub Actions workflow).
 # The QA suites use jsdom and mocked native bridges (no Playwright/Chromium is
 # required; clip-real-browser-check is not part of `npm test`), so the plain
 # node image is enough.
@@ -33,7 +33,7 @@ windows-source:
     - npm run test:native
     - (cd qa && npm test)
     - node scripts/package-browser.cjs
-    - node qa/single-html-check.cjs dist/Karevo.html
+    - node qa/single-html-check.cjs dist/Inkreel.html
 
 android-source:
   image: node:22-bookworm
