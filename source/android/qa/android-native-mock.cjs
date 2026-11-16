@@ -10,10 +10,10 @@ module.exports=function setupNative(w,calls,state){
    Object.assign(entry,payload,{method:names[action]||action});calls.push(entry);
    const timer=setTimeout(()=>{timers.delete(timer);let result;
     if(results.has(action)){result=results.get(action);results.delete(action);}
-    else if(action==='info')result={ok:true,platform:'android',version:'3.1.3'};
-    else if(action==='open-project')result=state.getOpenJson()?{ok:true,json:state.getOpenJson(),name:'QA.karevo'}:{ok:false,canceled:true};
-    else if(action==='export-images')result={ok:true,count:payload.items.length,folder:'Pictures/Karevo'};
-    else result={ok:true,name:payload.name,count:1,folder:'Pictures/Karevo'};
+    else if(action==='info')result={ok:true,platform:'android',version:'3.3.0'};
+    else if(action==='open-project')result=state.getOpenJson()?{ok:true,json:state.getOpenJson(),name:'QA.inkreel'}:{ok:false,canceled:true};
+    else if(action==='export-images')result={ok:true,count:payload.items.length,folder:'Pictures/Inkreel'};
+    else result={ok:true,name:payload.name,count:1,folder:'Pictures/Inkreel'};
     reply(id,result);
    },10);timers.add(timer);
   },

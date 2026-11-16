@@ -49,7 +49,7 @@ function harness(options = {}) {
 
   const cases = [
     ['getInfo', [], 'info', {}],
-    ['saveProject', ['{"schema":"bulten-studio-project"}', 'proje.karevo'], 'save-project', { json: '{"schema":"bulten-studio-project"}', name: 'proje.karevo' }],
+    ['saveProject', ['{"schema":"bulten-studio-project"}', 'proje.inkreel'], 'save-project', { json: '{"schema":"bulten-studio-project"}', name: 'proje.inkreel' }],
     ['openProject', [], 'open-project', {}],
     ['saveImage', ['data:image/png;base64,AA==', 'görsel.png'], 'save-image', { dataUrl: 'data:image/png;base64,AA==', name: 'görsel.png' }],
     ['exportImages', [[{ name: '1.png', dataUrl: 'data:image/png;base64,AA==' }]], 'export-images', { items: [{ name: '1.png', dataUrl: 'data:image/png;base64,AA==' }] }],
@@ -66,10 +66,10 @@ function harness(options = {}) {
     assert.ok(!ids.has(call.id)); ids.add(call.id);
     assert.equal(h.timers.size, 1);
     assert.equal([...h.timers.values()][0].delay, action === 'info' || action === 'copy-text' ? 90000 : 600000);
-    const result = { id: call.id, ok: true, name: 'çıktı', count: 2, folder: 'Pictures/Karevo', json: '{"boards":[]}', ignored: 'private' };
+    const result = { id: call.id, ok: true, name: 'çıktı', count: 2, folder: 'Pictures/Inkreel', json: '{"boards":[]}', ignored: 'private' };
     h.reply(method === 'openProject' ? JSON.stringify(result) : result);
     const actual = plain(await promise);
-    assert.deepEqual(actual, { ok: true, name: 'çıktı', count: 2, folder: 'Pictures/Karevo', json: '{"boards":[]}', ...(method === 'getInfo' ? { platform: 'android', version: '3.1.3' } : {}) });
+    assert.deepEqual(actual, { ok: true, name: 'çıktı', count: 2, folder: 'Pictures/Inkreel', json: '{"boards":[]}', ...(method === 'getInfo' ? { platform: 'android', version: '3.3.0' } : {}) });
     assert.equal(h.timers.size, 0);
     h.reply({ id: call.id, ok: false, error: 'duplicate' });
   }

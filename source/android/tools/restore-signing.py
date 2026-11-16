@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Restore a private Karevo signing backup locally; requires cryptography."""
+"""Restore a private Inkreel signing backup locally; requires cryptography."""
 import argparse
 import base64
 import getpass
@@ -10,9 +10,9 @@ from zipfile import ZipFile
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 
-MAGIC = b'KAREVOKEY1\n'
-AAD = b'Karevo Android Signing Backup v1'
-FILES = {'karevo-release.p12', 'release.password', 'signing-config.json'}
+MAGIC = b'INKREELKEY1\n'
+AAD = b'Inkreel Android Signing Backup v1'
+FILES = {'inkreel-release.p12', 'release.password', 'signing-config.json'}
 
 
 def restore(source, password, output):
@@ -20,7 +20,7 @@ def restore(source, password, output):
     if len(raw) > 1048576 or not raw.startswith(MAGIC):
         raise ValueError('Invalid signing backup.')
     data = json.loads(raw[len(MAGIC):])
-    if data.get('format') != 'karevo-android-signing-v1' or data.get('kdf') != 'scrypt-n131072-r8-p1':
+    if data.get('format') != 'inkreel-android-signing-v1' or data.get('kdf') != 'scrypt-n131072-r8-p1':
         raise ValueError('Unsupported signing backup.')
     salt, nonce, ciphertext = [base64.b64decode(data[name], validate=True) for name in ('salt', 'nonce', 'ciphertext')]
     if len(salt) != 32 or len(nonce) != 12:
@@ -36,7 +36,7 @@ def restore(source, password, output):
             raise ValueError('Unexpected files in signing backup.')
         files = {entry.filename: archive.read(entry) for entry in entries}
     config = json.loads(files['signing-config.json'])
-    if config.get('package') != 'com.karevo.studio' or config.get('alias') != 'karevo-release':
+    if config.get('package') != 'com.inkreel.studio' or config.get('alias') != 'inkreel-release':
         raise ValueError('Unexpected signing identity.')
     folder.mkdir(mode=0o700, parents=True)
     for name, data in files.items():

@@ -1,12 +1,12 @@
-# Karevo kaynak kodu
+# Inkreel kaynak kodu
 
-Windows 3.2.4 ve Android 3.1.3 uygulamalarının kaynakları, tasarım varlıkları, testleri ve derleme araçları bu klasördedir. İndirme ve güncelleme adresleri aynı depoda korunur; derlenmiş uygulamalar [Releases](https://gitlab.com/Turkish_Vito/karevo/-/releases/karevo-v3.2.3-preview) bölümündedir.
+Windows 3.3.0 ve Android 3.3.0 uygulamalarının kaynakları, tasarım varlıkları, testleri ve derleme araçları bu klasördedir. İndirme ve güncelleme adresleri aynı depoda korunur; derlenmiş uygulamalar [Releases](https://gitlab.com/Turkish_Vito/inkreel/-/releases/karevo-v3.2.3-preview) bölümündedir.
 
 | Klasör | İçerik |
 | --- | --- |
 | [windows](windows/) | Electron uygulaması, yerel dosya köprüsü, güncelleyici, NSIS kurucusu ve testler |
 | [android](android/) | Android Java uygulaması, WebView köprüsü, web arayüzü, APK derleme ve doğrulama araçları |
-| [branding](branding/) | Karevo'nun PNG ve SVG simgeleri |
+| [branding](branding/) | Inkreel'in PNG ve SVG simgeleri |
 | [release-tools](release-tools/) | Sürüm notu şablonu; yayımlama `windows/scripts/prepare-release.cjs` ile yapılır |
 | [tools](tools/) | Kaynak yayınlama güvenlik kontrolü |
 
@@ -43,7 +43,7 @@ Tarayıcı sürümünü üretmek için:
 
 ```sh
 node scripts/package-browser.cjs
-node qa/single-html-check.cjs dist/Karevo.html
+node qa/single-html-check.cjs dist/Inkreel.html
 ```
 
 ## Android
@@ -59,13 +59,13 @@ npm --prefix qa ci
 npm --prefix qa test
 ```
 
-`--compile-only` kaynakları, kaynak dosyalarını ve DEX'i derler; dağıtılabilir imzalı APK üretmez. İmzalı APK için mevcut Karevo anahtarını depo dışındaki özel bir klasöre geri yükleyip `KAREVO_SIGNING_DIR` ile seçmek gerekir. Araç yeni bir güncelleme anahtarı üretmez ve farklı sertifikayı reddeder. Ayrıntılar: [Android derleme ve imza yedeği](android/BUILD.md).
+`--compile-only` kaynakları, kaynak dosyalarını ve DEX'i derler; dağıtılabilir imzalı APK üretmez. İmzalı APK için Inkreel 3.3.0 için yeni oluşturulan anahtar gerekir (eski Karevo anahtarı kayıptır): `./build-apk.sh --create-signing` anahtarı bir kez oluşturur, `KAREVO_SIGNING_DIR` ile depo dışındaki özel bir klasör seçilebilir. Sonraki derlemeler farklı sertifikayı reddeder. Ayrıntılar: [Android derleme ve imza yedeği](android/BUILD.md).
 
 ## Güncelleme ve veri uyumluluğu
 
-`publisher/` ve imzalı Windows güncelleme dosyaları depo kökünde kalır. Kaynak kodu eklemek bu dosyaları, sürüm varlıklarını veya `releases/latest/download/latest.json` adresini değiştirmez. Karevo Windows 3.2.3 ve Android 3.1.3 elle kurulur; mevcut imzalı Windows kanalının son arşivi 3.2.1'dir.
+`publisher/` ve imzalı Windows güncelleme dosyaları depo kökünde kalır. Kaynak kodu eklemek bu dosyaları, sürüm varlıklarını veya `releases/latest/download/latest.json` adresini değiştirmez. Inkreel Windows 3.3.0 ve Android 3.3.0 elle kurulur; Android'de Karevo uygulamasının yanında yeni bir uygulama olarak kurulur (eski imza anahtarı kayıp). Projeleri Karevo içinde kaydedip Inkreel içinde açın.
 
-Windows'un eski kullanıcı veri yolu, yerel protokolü, proje şeması ve güncelleme açık anahtarı korunur. Android kimliği `com.karevo.studio` olup önceki uygulamadan ayrı kurulur. Yeni kayıtlar `.karevo`; önceki `.bulten` ve `.netice` projeleri açılabilir.
+Windows'un eski kullanıcı veri yolu, yerel protokolü, proje şeması ve güncelleme açık anahtarı korunur. Android kimliği `com.inkreel.studio` olup önceki uygulamadan ayrı kurulur. Yeni kayıtlar `.inkreel`; önceki `.karevo`, `.bulten` ve `.netice` projeleri açılabilir.
 
 ## Depoda tutulanlar
 

@@ -51,13 +51,13 @@ function prepareRelease(argv, dependencies = {}) {
   const run = dependencies.spawnSync || spawnSync, log = dependencies.log || console.log;
   const a = args(argv);
   const repoSegment = '[A-Za-z0-9_][A-Za-z0-9_.-]{0,99}';
-  if (!new RegExp('^' + repoSegment + '(?:/' + repoSegment + ')+$').test(a.repo || '') || (a.repo || '').split('/').some(part => /^\.+$/.test(part) || /\.git$/.test(part)) || (a.repo || '').length > 255) throw new Error('--repo ad-alani/proje (iç içe gruplar dahil, örn. Turkish_Vito/karevo) biçiminde gerekli.');
+  if (!new RegExp('^' + repoSegment + '(?:/' + repoSegment + ')+$').test(a.repo || '') || (a.repo || '').split('/').some(part => /^\.+$/.test(part) || /\.git$/.test(part)) || (a.repo || '').length > 255) throw new Error('--repo ad-alani/proje (iç içe gruplar dahil, örn. Turkish_Vito/inkreel) biçiminde gerekli.');
   for (const key of ['installer', 'version', 'sequence', 'key']) if (!a[key]) throw new Error('--' + key + ' gerekli.');
   C.compareVersions(a.version, a.version);
   if (!/^[1-9]\d*$/.test(a.sequence) || !Number.isSafeInteger(Number(a.sequence))) throw new Error('Yayın sırası pozitif ve güvenli bir tamsayı olmalı.');
   const installer = fileInfo(a.installer, C.MAX_INSTALLER_BYTES, 'Kurulum dosyası'), key = fileInfo(a.key, 4096, 'İmzalama anahtarı');
   const fileName = path.basename(installer.absolute);
-  if (fileName !== 'Karevo-' + a.version + '-Setup.exe') throw new Error('Kurucu dosya adı belirtilen sürümle tam olarak eşleşmeli.');
+  if (fileName !== 'Inkreel-' + a.version + '-Setup.exe') throw new Error('Kurucu dosya adı belirtilen sürümle tam olarak eşleşmeli.');
   if (sameFile(installer, key)) throw new Error('Kurucu ve özel anahtar ayrı dosyalar olmalı.');
   validateExecutable(installer);
   const privateKey = crypto.createPrivateKey(fs.readFileSync(key.absolute));
@@ -96,8 +96,8 @@ function prepareRelease(argv, dependencies = {}) {
   finally { fs.closeSync(handle); }
   if (verifiedTarget.stat.size !== signed.installer.size || total !== signed.installer.size || hash.digest('hex') !== signed.installer.sha256) throw new Error('Hazırlanan kurucu imzalı dosya özetiyle eşleşmiyor.');
   const feed = 'https://gitlab.com/' + a.repo + '/-/releases/permalink/latest/downloads/latest.json';
-  const releaseArgs = ['release', 'create', 'v' + a.version, target, manifest, '--repo', a.repo, '--name', 'Karevo ' + a.version];
-  if (notes) releaseArgs.push('--notes-file', notes.absolute); else releaseArgs.push('--notes', 'Karevo ' + a.version + ' Windows güncellemesi.');
+  const releaseArgs = ['release', 'create', 'v' + a.version, target, manifest, '--repo', a.repo, '--name', 'Inkreel ' + a.version];
+  if (notes) releaseArgs.push('--notes-file', notes.absolute); else releaseArgs.push('--notes', 'Inkreel ' + a.version + ' Windows güncellemesi.');
   const output = { prepared: true, published: false, repo: a.repo, feed, files: [target, manifest], next: 'Dosyalar hazır. Yayımlamak için aynı komuta --publish ekleyin; glab ile GitLab hesabınızda oturum açılmış olmalı.' };
   log(JSON.stringify(output, null, 2));
   if (a.publish) {

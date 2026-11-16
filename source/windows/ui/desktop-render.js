@@ -1,4 +1,4 @@
-/* Bülten Studio — format-aware composition and editable canvas layers. */
+/* Inkreel — format-aware composition and editable canvas layers. */
 (function (global) {
   'use strict';
   var FORMATS = {

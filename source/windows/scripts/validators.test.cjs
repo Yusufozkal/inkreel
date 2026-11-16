@@ -15,9 +15,10 @@ test('filenames cannot escape export directory or use Windows device names', () 
   assert.equal(safeName('C:\\folder\\two.jpg', 'default', '.jpg'), 'two.jpg');
   assert.equal(safeName('CON', 'default', '.png'), 'default.png');
   for (const name of ['COM¹', 'COM².txt', 'LPT³', 'LPT¹.png']) assert.equal(safeName(name, 'default', '.png'), 'default.png');
-  assert.equal(safeName('... ', 'default', '.karevo'), 'default.karevo');
-  assert.equal(safeName('report.bulten', 'default', '.karevo'), 'report.karevo');
-  assert.equal(safeName('report.karevo', 'default', '.karevo'), 'report.karevo');
+  assert.equal(safeName('... ', 'default', '.inkreel'), 'default.inkreel');
+  assert.equal(safeName('report.bulten', 'default', '.inkreel'), 'report.inkreel');
+  assert.equal(safeName('report.inkreel', 'default', '.inkreel'), 'report.inkreel');
+  assert.equal(safeName('report.karevo', 'default', '.inkreel'), 'report.inkreel');
   assert(!/[<>:"/\\|?*\x00-\x1f]/.test(safeName('bad<>?name:*')));
 });
 test('only real PNG/JPEG headers and bounded dimensions are accepted', () => {

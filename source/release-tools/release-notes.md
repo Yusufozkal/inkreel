@@ -1,13 +1,12 @@
-**Karevo**, Windows ve Android için yeni adıyla sunuluyor. Windows 3.2.3'te görünen eski uygulama ve çıktı dosyası adları tamamlandı; çalıştırılabilir dosya artık `Karevo.exe`.
+**Karevo artık Inkreel.** Windows ve Android için uygulama adı, simgesi ve dosya adları Inkreel olarak yenilendi. Sürüm 3.3.0.
 
-## Windows 3.2.3
+## Windows 3.3.0
 
-- Windows 10/11, 64 bit gerekir.
-- Mevcut proje biçimi ve uygulamanın veri kimliği korunmuştur. Yine de kurulumdan önce projelerinizi `.bulten` dosyası olarak yedekleyin.
-- Bu önizleme, mevcut imzalı otomatik güncelleme kanalına eklenmemiştir; indirme ve kurulum elle yapılır.
+- Windows 10/11, 64 bit gerekir. Çalıştırılabilir dosya artık `Inkreel.exe`; kurucu `Inkreel-3.3.0-Setup.exe`.
+- Mevcut kurulumun üzerine kurulur: kullanıcı veri alanı ve proje şeması korunur, eski `Karevo.exe` ile eski Karevo kısayolları kaldırılır ve Inkreel kısayolları oluşturulur.
+- Yeni projeler `.inkreel` uzantısıyla kaydedilir. Önceki `.karevo`, `.bulten`, `.netice` ve JSON projeleri açılmaya devam eder. Yine de kurulumdan önce projelerinizi yedekleyin.
 - Kurucu Windows yayıncı sertifikasıyla imzalı değildir; SmartScreen uyarısı gösterebilir.
-- Bu derlemenin kurulumu gerçek bir Windows cihazında henüz denenmemiştir.
 
-## Android 3.1.3
+## Android 3.3.0
 
-`Karevo-3.1.3-Android.apk`, `com.karevo.studio` kimliğiyle ayrı bir uygulama olarak kurulur. Eski Android uygulamasının üzerine güncelleme değildir; eski uygulamanız ve verileriniz kalır. Çalışmalarınızı eski uygulamadan proje dosyası olarak dışa aktararak Karevo'da açabilirsiniz. Kurulum gerçek bir Android cihazında henüz doğrulanmadı.
+`Inkreel-3.3.0-Android.apk`, `com.inkreel.studio` kimliğiyle yeni ve ayrı bir uygulama olarak kurulur; eski Karevo uygulamasının güncellemesi değildir (eski imza anahtarı kayıp olduğundan güncelleme mümkün değildir). Karevo uygulamanız ve verileriniz kalır. Çalışmalarınızı Karevo içinde Kaydet ile dışa aktarıp Inkreel içinde açın (`.karevo` dosyaları açılır). Kurulum gerçek bir Android cihazında henüz doğrulanmadı.

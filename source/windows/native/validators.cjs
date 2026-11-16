@@ -15,15 +15,15 @@ function validateProject(json) {
   if (typeof json !== 'string' || Buffer.byteLength(json, 'utf8') > MAX_PROJECT) throw new Error('Proje en fazla 100 MB olabilir.');
   let parsed;
   try { parsed = JSON.parse(json); } catch { throw new Error('Proje dosyası geçerli JSON içermiyor.'); }
-  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('Geçerli bir Karevo projesi seçin.');
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('Geçerli bir Inkreel projesi seçin.');
   return json;
 }
 
-function safeName(value, fallback = 'Karevo', ext = '') {
+function safeName(value, fallback = 'Inkreel', ext = '') {
   let name = typeof value === 'string' ? value : fallback;
   name = name.replace(/\\/g, '/').split('/').pop().normalize('NFC');
   name = name.replace(/[<>:"/\\|?*\x00-\x1f\x7f]/g, '-').replace(/^[. ]+|[. ]+$/g, '').slice(0, 130);
-  name = name.replace(/\.(?:png|jpe?g|karevo|bulten|netice|json|mp4|webm|csv|ics|txt)$/i, '').replace(/[. ]+$/g, '');
+  name = name.replace(/\.(?:png|jpe?g|inkreel|karevo|bulten|netice|json|mp4|webm|csv|ics|txt)$/i, '').replace(/[. ]+$/g, '');
   if (!name || /^(?:con|prn|aux|nul|com[1-9¹²³]|lpt[1-9¹²³])(?:\.|$)/i.test(name)) name = fallback;
   return name + ext;
 }
@@ -75,7 +75,7 @@ function prepareImages(items) {
     const image = decodeImage(item.dataUrl);
     total += image.bytes.length;
     if (total > MAX_BATCH_BYTES) throw new Error('Toplu çıktı en fazla 384 MB olabilir.');
-    const base = safeName(item.name, `Karevo-${index + 1}`);
+    const base = safeName(item.name, `Inkreel-${index + 1}`);
     let name = base + image.ext;
     for (let n = 2; seen.has(name.toLocaleLowerCase('en')); n++) name = `${base}-${n}${image.ext}`;
     seen.add(name.toLocaleLowerCase('en'));
@@ -158,7 +158,7 @@ function prepareText(text, name) {
   const match = /\.(csv|ics|txt)$/i.exec(filename);
   if (!match) throw new Error('Yalnızca CSV, ICS veya TXT dosyası kaydedilebilir.');
   const ext = '.' + match[1].toLowerCase();
-  return { bytes: Buffer.from(text, 'utf8'), ext, name: safeName(filename, 'Karevo', ext) };
+  return { bytes: Buffer.from(text, 'utf8'), ext, name: safeName(filename, 'Inkreel', ext) };
 }
 
 function validateClipboard(text) {

@@ -53,18 +53,18 @@ function check(name){report.checks.push(name);console.log('PASS:',name);}
   report.outputs={audible:{width:v.width,height:v.height,duration,rms:level,audioCodec:a.codec_name,videoCodec:v.codec_name},muted:{width:mv.width,height:mv.height,hasAudio:mutedProbe.streams.some(s=>s.codec_type==='audio')},capabilities};
   }
   await page.setViewportSize({width:1280,height:800});await page.goto(origin+'/app/index.html');await page.evaluate(()=>StudioApp.ready);
-  assert.match(await page.title(),/^Karevo/,'Application title uses the new brand');
-  assert.match(await page.locator('.wordmark').innerText(),/karevo/i);
+  assert.match(await page.title(),/^Inkreel/,'Application title uses the new brand');
+  assert.match(await page.locator('.wordmark').innerText(),/inkreel/i);
   const brand=await page.locator('.wordmark img.brand-icon').evaluate(img=>({src:img.getAttribute('src'),width:img.naturalWidth,height:img.naturalHeight}));
-  assert.equal(brand.src,'assets/karevo-icon.png');assert.equal(brand.width,512);assert.equal(brand.height,512,'Karevo logo is decoded in the real browser');
-  assert((await page.locator('#projectInput').getAttribute('accept')).split(',').includes('.karevo'));
+  assert.equal(brand.src,'assets/inkreel-icon.png');assert.equal(brand.width,512);assert.equal(brand.height,512,'Inkreel logo is decoded in the real browser');
+  assert((await page.locator('#projectInput').getAttribute('accept')).split(',').includes('.inkreel'));
   const [projectDownload]=await Promise.all([page.waitForEvent('download'),page.keyboard.press('Control+s')]);
-  assert(projectDownload.suggestedFilename().endsWith('.karevo'),'Real project save uses the Karevo extension');
+  assert(projectDownload.suggestedFilename().endsWith('.inkreel'),'Real project save uses the Inkreel extension');
   const savedProject=JSON.parse(await fsp.readFile(await projectDownload.path(),'utf8'));
   assert.equal(savedProject.schema,'bulten-studio-project','Project schema stays compatible');
   assert.equal(savedProject.boards.length,1);
-  await page.screenshot({path:path.join(__dirname,'karevo-app-preview.png')});
-  check('Karevo title and decoded K logo are visible; real project download uses .karevo and preserves the existing project schema');
+  await page.screenshot({path:path.join(__dirname,'inkreel-app-preview.png')});
+  check('Inkreel title and decoded K logo are visible; real project download uses .inkreel and preserves the existing project schema');
   await page.click('#clipButton');await page.setInputFiles('#clipFileInput',fixture);await page.waitForFunction(()=>StudioClipUI.getState().hasClip&&!StudioClipUI.getState().operation);await page.waitForFunction(()=>{const c=document.querySelector('#clipCanvas'),ctx=c.getContext('2d'),colors=new Set();for(let y=1;y<10;y++)for(let x=1;x<10;x++){const p=ctx.getImageData(Math.floor(c.width*x/10),Math.floor(c.height*y/10),1,1).data;colors.add(p[0]+','+p[1]+','+p[2]);}return colors.size>8;},null,{timeout:7000});check('A decoded first video frame is visibly drawn before pressing Play');await page.fill('#clipText','GÜNÜN HABERİ');await page.selectOption('#clipRatio','story');
   const track=await page.locator('#clipTimelineInner').boundingBox(), startHandle=await page.locator('#clipStartHandle').boundingBox();assert(track&&startHandle&&track.width>120,'Timeline has usable width');
   await page.mouse.move(startHandle.x+startHandle.width/2,startHandle.y+startHandle.height/2);await page.mouse.down();await page.mouse.move(track.x+track.width*0.25,startHandle.y+startHandle.height/2,{steps:5});await page.mouse.up();assert(Math.abs(Number(await page.locator('#clipStart').inputValue())-1)<0.2,'Real pointer drag sets start');

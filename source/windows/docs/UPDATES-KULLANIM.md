@@ -6,7 +6,7 @@ Yeni sürüm, Ed25519 ile imzalanmış yayın bilgilerini ve bu bilgilerin işar
 
 3.0 sürümüne bu sistem uzaktan eklenemez; 3.1 kurucusu bir kez elle kurulmalıdır. Mevcut Bülten Studio kapatılarak aynı kullanıcı hesabına kurulur. Programın adı, kimliği, yerel kaynağı ve proje veritabanı korunur. Çalışmalarınızı ayrıca `.bulten` dosyası olarak yedekleyin.
 
-Üstteki güncelleme simgesi veya Yardım → Güncellemeleri denetle bölümünden yayıncının verdiği GitLab proje bağlantısını (örn. `Turkish_Vito/karevo`) ya da HTTPS yayın adresini bir kez kaydedin. Kaynak ayarlanmadan uygulama çevrimiçi güncelleme denemez. Otomatik denetim açıksa en fazla günde bir denetler; indirme ve kurulum kullanıcı düğmeleriyle başlatılır.
+Üstteki güncelleme simgesi veya Yardım → Güncellemeleri denetle bölümünden yayıncının verdiği GitLab proje bağlantısını (örn. `Turkish_Vito/inkreel`) ya da HTTPS yayın adresini bir kez kaydedin. Kaynak ayarlanmadan uygulama çevrimiçi güncelleme denemez. Otomatik denetim açıksa en fazla günde bir denetler; indirme ve kurulum kullanıcı düğmeleriyle başlatılır.
 
 Yeni sürüm bulunduğunda indir. İndirme ve doğrulama sırasında editörde çalışılabilir. `Yeniden başlat ve güncelle` açık projeyi kilitler, otomatik kaydı tamamlar ve `.bulten` yedeği oluşturur. Ardından doğrulanmış kurucu başlar; uygulamanın kapanmasını bekleyerek yeni sürümü yükler ve programı tekrar açar.
 
@@ -14,7 +14,7 @@ Yeni sürüm bulunduğunda indir. İndirme ve doğrulama sırasında editörde �
 
 ## Yayıncı için
 
-GitLab hesabı bağlandıktan sonra yalnızca kurulum dosyaları için bir proje kullanılabilir (resmî proje: https://gitlab.com/Turkish_Vito/karevo). Kaynak kodunu veya imza anahtarını herkese açmak gerekmez. Varsayılan public-release akışında depodaki kurucuların bağlantısı herkese açıktır; özel erişim isteyen dağıtım ayrıca tasarlanmalıdır. Şifre veya kişisel erişim anahtarı uygulamaya eklenmez.
+GitLab hesabı bağlandıktan sonra yalnızca kurulum dosyaları için bir proje kullanılabilir (resmî proje: https://gitlab.com/Turkish_Vito/inkreel). Kaynak kodunu veya imza anahtarını herkese açmak gerekmez. Varsayılan public-release akışında depodaki kurucuların bağlantısı herkese açıktır; özel erişim isteyen dağıtım ayrıca tasarlanmalıdır. Şifre veya kişisel erişim anahtarı uygulamaya eklenmez.
 
 Her yeni sürüm için:
 
@@ -27,7 +27,7 @@ Her yeni sürüm için:
 Örnek hazırlama komutu (`--publish` olmadan GitLab'a yazmaz):
 
 ```sh
-node scripts/prepare-release.cjs --repo Turkish_Vito/karevo --installer installer/out/Bulten-Studio-3.1.0-Setup.exe --version 3.1.0 --sequence 30100 --key /GUVENLI/KONUM/private-key.pem --out release/v3.1.0
+node scripts/prepare-release.cjs --repo Turkish_Vito/inkreel --installer installer/out/Bulten-Studio-3.1.0-Setup.exe --version 3.1.0 --sequence 30100 --key /GUVENLI/KONUM/private-key.pem --out release/v3.1.0
 ```
 
 Yayın dosyaları incelendikten sonra aynı komuta `--publish` eklenebilir. Bu, oturum açılmış GitLab CLI (`glab release create`) ile yalnızca açıkça belirtilen kurucu ve manifesti yükler. GitLab erişimi (`glab auth login`) bu komutun çalıştığı ortamda kullanıcı hesabıyla doğrulanmış olmalıdır.

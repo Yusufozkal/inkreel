@@ -1,12 +1,12 @@
 'use strict';
-// Regenerate the native Karevo icons from the committed brand image.
+// Regenerate the native Inkreel icons from the committed brand image.
 const fs = require('node:fs');
 const path = require('node:path');
 let canvas;
 try { canvas = require('@napi-rs/canvas'); }
 catch { canvas = require('../qa/node_modules/@napi-rs/canvas'); }
 
-const source = fs.readFileSync(path.join(__dirname, '..', '..', 'branding', 'karevo-icon.png'));
+const source = fs.readFileSync(path.join(__dirname, '..', '..', 'branding', 'inkreel-icon.png'));
 const brand = new canvas.Image();
 brand.src = source;
 

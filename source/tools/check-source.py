@@ -5,7 +5,7 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-PRIVATE_NAME = re.compile(r'(?i)(?:\.(?:p12|pfx|pem|key|jks|keystore|karevokey|password)$|(?:^|/)(?:\.env[^/]*|release\.password|signing-config\.json|[^/]*parolasi[^/]*)$)')
+PRIVATE_NAME = re.compile(r'(?i)(?:\.(?:p12|pfx|pem|key|jks|keystore|karevokey|inkreelkey|password)$|(?:^|/)(?:\.env[^/]*|release\.password|signing-config\.json|[^/]*parolasi[^/]*)$)')
 PRIVATE_CONTENT = re.compile(rb'-----BEGIN (?:[A-Z0-9]+ )*PRIVATE KEY-----|\b(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{50,}|AKIA[A-Z0-9]{16})\b')
 EXCLUDED = {'node_modules', 'dist', 'build', 'build-check', 'out', 'toolchain', '__pycache__'}
 

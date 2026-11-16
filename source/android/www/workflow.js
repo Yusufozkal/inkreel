@@ -1,4 +1,4 @@
-/* Karevo — local CSV production lists and calendar planning. */
+/* Inkreel — local CSV production lists and calendar planning. */
 (function (root) {
   'use strict';
 
@@ -225,7 +225,7 @@
   function exportIcs(project) {
     const value = core().normalizeProject(project);
     const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
-    const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Karevo//Offline Publication Planner//TR', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Karevo yayın planı'];
+    const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Inkreel//Offline Publication Planner//TR', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Inkreel yayın planı'];
     for (const board of value.boards) {
       if (!board.post.publishAt) continue;
       const end = endTime(board.post.publishAt);

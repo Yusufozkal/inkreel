@@ -1,4 +1,4 @@
-/* Karevo — bounded local-file video editing. No uploads or external URLs. */
+/* Inkreel — bounded local-file video editing. No uploads or external URLs. */
 (function (global) {
   'use strict';
   const LIMITS = Object.freeze({ MAX_INPUT_BYTES: 120 * 1024 * 1024, MAX_INPUT_DURATION: 300, MAX_PIXELS: 8294400, MAX_EDGE: 4096, MAX_OUTPUT_DURATION: 60, MAX_OUTPUT_BYTES: 40 * 1024 * 1024, FPS: 24 });
@@ -243,7 +243,7 @@
         try { aborted(signal); recorder.start(500); deadline = global.setTimeout(() => stop(error('Video zamanında tamamlanamadı. Pencereyi açık ve görünür tutup yeniden deneyin.')), o.duration * 1000 + 15000); report(0); wait(video.play(), signal, 10000, 'Video oynatılamadı.').then(tick, stop); } catch (e) { finish(e); }
       });
       aborted(signal); const head = new Uint8Array(await read(blob.slice(0, 64), false, signal)); if (o.format === 'mp4' ? ascii(head, 4, 4) !== 'ftyp' : unsigned(head, 0, 4) !== 0x1a45dfa3) throw error('Kodlayıcı geçerli video üretmedi. Diğer biçimi deneyin.');
-      const dataUrl = await read(blob, true, signal); aborted(signal); report(1); return { blob, dataUrl, mime: 'video/' + o.format, width: o.width, height: o.height, duration: o.duration, name: 'Karevo-Video.' + o.format };
+      const dataUrl = await read(blob, true, signal); aborted(signal); report(1); return { blob, dataUrl, mime: 'video/' + o.format, width: o.width, height: o.height, duration: o.duration, name: 'Inkreel-Video.' + o.format };
     } finally {
       if (external) external.removeEventListener('abort', cancel); stopFrames();
       if (recorder && recorder.state !== 'inactive') { try { recorder.stop(); } catch (_) {} }

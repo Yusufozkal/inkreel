@@ -1,6 +1,6 @@
 {
-  "name": "karevo-qa",
-  "version": "3.2.4",
+  "name": "inkreel-qa",
+  "version": "3.3.0",
   "private": true,
   "description": "Desktop editor DOM integration checks; native bridge mocked, no browser or Windows automation.",
   "scripts": {

@@ -17,11 +17,11 @@ version = package['version']
 assert re.fullmatch(r'\d+\.\d+\.\d+', version), 'Expected an exact stable application version'
 assert all(int(part) <= 65535 for part in version.split('.')), 'NSIS version component is too large'
 payload = root / ('payload-tr-en-' + version)
-original = project / 'dist' / 'Karevo-win32-x64'
+original = project / 'dist' / 'Inkreel-win32-x64'
 local_compiler = root / 'toolchain' / 'root' / 'usr' / 'bin' / 'makensis'
 compiler = os.environ.get('KAREVO_NSIS') or (str(local_compiler) if local_compiler.is_file() else shutil.which('makensis'))
 assert compiler, 'Install NSIS or set KAREVO_NSIS to the makensis executable'
-output = root / 'out' / ('Karevo-' + version + '-Setup.exe')
+output = root / 'out' / ('Inkreel-' + version + '-Setup.exe')
 report = output.with_suffix('.verification.json')
 manifest_path = root / ('payload-manifest-' + version + '.json')
 uninstall_include = root / ('payload-uninstall-' + version + '.nsh')
@@ -59,7 +59,7 @@ if '--preflight-only' in sys.argv:
                       'installerProductVersion': version + '.0', 'payloadBuilt': False}))
     raise SystemExit(0)
 
-assert (original / 'Karevo.exe').is_file(), 'Build the Windows runtime first.'
+assert (original / 'Inkreel.exe').is_file(), 'Build the Windows runtime first.'
 assert (original / 'resources' / 'app.asar').is_file(), 'The app.asar runtime is missing.'
 # Reject stale runtimes and modified source before touching any installer output.
 subprocess.run(['node', str(project / 'scripts' / 'verify-package.cjs'), str(original), '--nozip'],
@@ -96,7 +96,7 @@ for item in sorted(payload.rglob('*')):
         entries.append({'path': relative, 'bytes': item.stat().st_size,
                         'sha256': hashlib.file_digest(item.open('rb'), 'sha256').hexdigest()})
 assert entries and any(item['path'] == 'resources/app.asar' for item in entries)
-assert any(item['path'] == 'Karevo.exe' for item in entries)
+assert any(item['path'] == 'Inkreel.exe' for item in entries)
 
 # Delete only the exact shipped files; never recursively remove user folders.
 lines = ['; Generated from the verified portable payload. No recursive deletion.']

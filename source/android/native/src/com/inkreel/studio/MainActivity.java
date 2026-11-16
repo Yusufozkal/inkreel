@@ -1,4 +1,4 @@
-package com.karevo.studio;
+package com.inkreel.studio;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -167,7 +167,7 @@ public final class MainActivity extends Activity {
                         else if (type.equalsIgnoreCase(".csv")) { types.add("text/csv"); types.add("text/plain"); types.add("application/csv"); }
                         else if (type.equalsIgnoreCase(".json")) types.add("application/json");
                         // Custom project extensions are not assigned a consistent MIME by document providers.
-                        else if (type.equalsIgnoreCase(".karevo") || type.equalsIgnoreCase(".bulten") || type.equalsIgnoreCase(".netice")) { types.clear(); types.add("*/*"); }
+                        else if (type.equalsIgnoreCase(".inkreel") || type.equalsIgnoreCase(".karevo") || type.equalsIgnoreCase(".bulten") || type.equalsIgnoreCase(".netice")) { types.clear(); types.add("*/*"); }
                     }
                 }
                 if (types.size() == 1 && !types.contains("*/*")) intent.setType(types.get(0));
@@ -210,7 +210,7 @@ public final class MainActivity extends Activity {
         @JavascriptInterface public void request(String action, String payload, String id) {
             if (destroyed || !trustedPage || id == null || !id.matches("[A-Za-z0-9_.:-]{1,120}")) return;
             if (action == null || payload == null || payload.length() > MAX_PAYLOAD_CHARS) { notifyResult(id, object("ok", false, "error", "İstek çok büyük veya geçersiz.")); return; }
-            if (action.equals("info")) { notifyResult(id, object("ok", true, "platform", "android", "version", "3.1.3")); return; }
+            if (action.equals("info")) { notifyResult(id, object("ok", true, "platform", "android", "version", "3.3.0")); return; }
             if (!busy.compareAndSet(false, true)) { notifyResult(id, object("ok", false, "error", "Önceki dosya işleminin bitmesini bekleyin.")); return; }
             worker.execute(() -> {
                 try { handleRequest(action, new JSONObject(payload), id); }
@@ -234,7 +234,7 @@ public final class MainActivity extends Activity {
                 if (json.length() > ExportData.MAX_PROJECT) throw new IOException("Proje en fazla 100 MB olabilir.");
                 byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
                 if (bytes.length > ExportData.MAX_PROJECT || !json.trim().startsWith("{")) throw new IOException("Proje dosyası geçersiz veya çok büyük.");
-                stageDocument(new ExportData(bytes, "application/json", ExportData.filename(payload.optString("name"), ".karevo"), 1), id, action); break;
+                stageDocument(new ExportData(bytes, "application/json", ExportData.filename(payload.optString("name"), ".inkreel"), 1), id, action); break;
             }
             case "open-project": {
                 Pending item = new Pending(id, action, "application/json", "", 1);
@@ -257,7 +257,7 @@ public final class MainActivity extends Activity {
             case "copy-text": {
                 String text = payload.getString("text");
                 if (text.length() > 10000) throw new IOException("Panoya en fazla 10.000 karakter kopyalanabilir.");
-                runOnUiThread(() -> { try { ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE); if (clipboard == null) throw new IllegalStateException(); clipboard.setPrimaryClip(ClipData.newPlainText("Karevo", text)); complete(id, object("ok", true)); } catch (Exception error) { complete(id, object("ok", false, "error", "Metin panoya kopyalanamadı.")); } }); break;
+                runOnUiThread(() -> { try { ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE); if (clipboard == null) throw new IllegalStateException(); clipboard.setPrimaryClip(ClipData.newPlainText("Inkreel", text)); complete(id, object("ok", true)); } catch (Exception error) { complete(id, object("ok", false, "error", "Metin panoya kopyalanamadı.")); } }); break;
             }
             case "export-images": createImageZip(payload.getJSONArray("items"), id); break;
             default: throw new IOException("Bu işlem desteklenmiyor.");
@@ -285,7 +285,7 @@ public final class MainActivity extends Activity {
             }
         } catch (Exception | OutOfMemoryError error) { clearPending(); throw error; }
         if (archive.length() > ExportData.MAX_PROJECT + 65536) { clearPending(); throw new IOException("ZIP dosyası çok büyük."); }
-        Pending item = new Pending(id, "export-images", "application/zip", "Karevo-Gorseller.zip", items.length());
+        Pending item = new Pending(id, "export-images", "application/zip", "Inkreel-Gorseller.zip", items.length());
         persistMetadata(item); pending = item; runOnUiThread(() -> requestDocument(item));
     }
     private void requestDocument(Pending item) {
@@ -297,7 +297,7 @@ public final class MainActivity extends Activity {
     }
     private void saveToGallery(ExportData image, String id) throws IOException {
         ContentValues values = new ContentValues(); values.put(MediaStore.Images.Media.DISPLAY_NAME, image.name); values.put(MediaStore.Images.Media.MIME_TYPE, image.mime);
-        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Karevo"); values.put(MediaStore.Images.Media.IS_PENDING, 1);
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Inkreel"); values.put(MediaStore.Images.Media.IS_PENDING, 1);
         Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         if (uri == null) throw new IOException("Galeri dosyası oluşturulamadı.");
         boolean saved = false;
@@ -305,7 +305,7 @@ public final class MainActivity extends Activity {
             try (OutputStream stream = getContentResolver().openOutputStream(uri, "w")) { if (stream == null) throw new IOException("Galeri açılamadı."); stream.write(image.bytes); stream.flush(); }
             ContentValues published = new ContentValues(); published.put(MediaStore.Images.Media.IS_PENDING, 0);
             if (getContentResolver().update(uri, published, null, null) < 1) throw new IOException("Galeri kaydı tamamlanamadı.");
-            saved = true; complete(id, object("ok", true, "name", image.name, "folder", "Pictures/Karevo", "count", 1));
+            saved = true; complete(id, object("ok", true, "name", image.name, "folder", "Pictures/Inkreel", "count", 1));
         } finally { if (!saved) try { getContentResolver().delete(uri, null, null); } catch (Exception ignored) {} }
     }
     private void shareImage(ExportData image, String id) throws IOException {
@@ -318,7 +318,7 @@ public final class MainActivity extends Activity {
         runOnUiThread(() -> {
             if (destroyed) return;
             Intent send = new Intent(Intent.ACTION_SEND).setType(image.mime).putExtra(Intent.EXTRA_STREAM, uri);
-            send.setClipData(ClipData.newUri(getContentResolver(), "Karevo görseli", uri)); send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            send.setClipData(ClipData.newUri(getContentResolver(), "Inkreel görseli", uri)); send.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             try { startActivity(Intent.createChooser(send, "Görseli paylaş").addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)); complete(id, object("ok", true, "name", image.name, "count", 1)); }
             catch (ActivityNotFoundException error) { complete(id, object("ok", false, "error", "Paylaşım yapacak uygulama bulunamadı.")); }
         });
@@ -382,8 +382,8 @@ public final class MainActivity extends Activity {
                 if (requestCode == OPEN_PROJECT && item.action.equals("open-project")) {
                     byte[] bytes; try (InputStream stream = getContentResolver().openInputStream(uri)) { if (stream == null) throw new IOException("Proje dosyası açılamadı."); bytes = readBounded(stream, ExportData.MAX_PROJECT); }
                     String json = decodeUtf8(bytes); if (json.startsWith("\uFEFF")) json = json.substring(1);
-                    if (!json.trim().startsWith("{")) throw new IOException("Bu dosya bir Karevo projesi değil.");
-                    String name = displayName(uri); if (!name.toLowerCase(Locale.US).matches(".*\\.(karevo|bulten|netice|json)$")) throw new IOException(".karevo, .bulten, .netice veya .json proje dosyası seçin.");
+                    if (!json.trim().startsWith("{")) throw new IOException("Bu dosya bir Inkreel projesi değil.");
+                    String name = displayName(uri); if (!name.toLowerCase(Locale.US).matches(".*\\.(inkreel|karevo|bulten|netice|json)$")) throw new IOException(".inkreel, .karevo, .bulten, .netice veya .json proje dosyası seçin.");
                     complete(item.id, object("ok", true, "json", json, "name", name));
                 } else if (requestCode == CREATE_DOCUMENT && !item.action.equals("open-project")) {
                     File file = new File(pendingDirectory(), "document.bin");
@@ -401,7 +401,7 @@ public final class MainActivity extends Activity {
         try (Cursor cursor = getContentResolver().query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {
             if (cursor != null && cursor.moveToFirst()) { String name = cursor.getString(0); if (name != null && name.length() <= 255) return name; }
         } catch (Exception ignored) {}
-        return "Proje.karevo";
+        return "Proje.inkreel";
     }
     private static byte[] readBounded(InputStream input, int max) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream(Math.min(max, 65536)); copyBounded(input, output, max); return output.toByteArray();

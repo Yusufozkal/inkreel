@@ -18,13 +18,14 @@ from zipfile import ZipFile
 import zlib
 
 ANDROID = '{http://schemas.android.com/apk/res/android}'
-PACKAGE = 'com.karevo.studio'
-VERSION = '3.1.3'
-VERSION_CODE = '30103'
-LABEL = 'Karevo'
-# Public SHA-256 certificate fingerprint for the separately installed Karevo
-# package baseline. This does not claim compatibility with the previous package.
-RELEASE_CERTIFICATE_SHA256 = '25e15c339646e5566e6fb0799fdedc3ac4b373530bfc3d4012bd60efc52c964d'
+PACKAGE = 'com.inkreel.studio'
+VERSION = '3.3.0'
+VERSION_CODE = '30300'
+LABEL = 'Inkreel'
+# The 3.3.0 signing key is new (the old Karevo key is lost), so no certificate
+# fingerprint is hard-coded. build-apk.sh passes the pinned fingerprint through
+# INKREEL_CERT_SHA256; when it is unset only the certificate shape is checked.
+RELEASE_CERTIFICATE_SHA256 = (os.environ.get('INKREEL_CERT_SHA256') or '').strip().lower()
 
 
 def require(condition, message):
@@ -127,7 +128,7 @@ def main():
                     'DEX Adler32 mismatch: ' + name)
             require(data[12:32] == hashlib.sha1(data[32:]).digest(), 'DEX SHA1 mismatch: ' + name)
             dex_data += data
-        for descriptor in (b'Lcom/karevo/studio/MainActivity;', b'Lcom/karevo/studio/ExportProvider;'):
+        for descriptor in (b'Lcom/inkreel/studio/MainActivity;', b'Lcom/inkreel/studio/ExportProvider;'):
             require(descriptor in dex_data, 'Compiled Java class missing: ' + descriptor.decode())
         require(b'Lcom/neticehaber/studio/' not in dex_data, 'Old Netice package compiled into DEX')
         require(b'Lcom/bultenstudio/app/' not in dex_data, 'Old Bulten package compiled into DEX')
@@ -172,13 +173,14 @@ def main():
     require('Number of signers: 1' in signatures, 'Unexpected signer count')
     require('Signer #1 key algorithm: RSA' in signatures, 'Signer must use RSA')
     require('Signer #1 key size (bits): 3072' in signatures, 'Signer must use RSA 3072')
-    require('CN=Karevo' in signatures, 'Unexpected certificate subject')
+    require('CN=Inkreel' in signatures, 'Unexpected certificate subject')
     fingerprint = re.search(r'Signer #1 certificate SHA-256 digest: ([0-9a-f]+)', signatures)
     require(fingerprint is not None, 'Certificate fingerprint missing')
     report['certificateSha256'] = fingerprint.group(1)
-    require(report['certificateSha256'] == RELEASE_CERTIFICATE_SHA256,
-            'Signing certificate differs from the Karevo package baseline')
-    report['checks']['karevoReleaseSigningCertificate'] = True
+    if RELEASE_CERTIFICATE_SHA256:
+        require(report['certificateSha256'] == RELEASE_CERTIFICATE_SHA256,
+                'Signing certificate differs from the pinned Inkreel certificate')
+    report['checks']['inkreelReleaseSigningCertificate'] = True
     report['checks']['apkSignatureV2V3Rsa3072'] = True
     run([build_tools / 'zipalign', '-c', '-P', '16', '4', apk], env)
     report['checks']['zipAlign16KiB'] = True

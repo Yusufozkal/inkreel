@@ -10,12 +10,12 @@ const report={environment:'jsdom22 + real Napi Canvas + fake-indexeddb; native u
 function check(name){report.checks.push(name);console.log('PASS:',name);}
 function deferred(){let resolve;const promise=new Promise(done=>resolve=done);return{promise,resolve};}
 function installNativeMock(w,context){
- const state={status:'idle',currentVersion:'3.2.4',latestVersion:null,notes:'',progress:0,feedUrl:'',autoCheck:true,configured:false,lastCheckedAt:null,error:null,downloadBytes:0,totalBytes:0};
+ const state={status:'idle',currentVersion:'3.3.0',latestVersion:null,notes:'',progress:0,feedUrl:'',autoCheck:true,configured:false,lastCheckedAt:null,error:null,downloadBytes:0,totalBytes:0};
  const controls={state,calls:context.calls,configureError:null,checkError:null,downloadTask:null,installTask:null};
  controls.emit=patch=>{Object.assign(state,patch);w.dispatchEvent(new w.CustomEvent('studio-update-state',{detail:copy(state)}));};
  const outcome=()=>({ok:true,state:copy(state)});
  Object.assign(w.StudioDesktop,{
-  getInfo:async()=>({platform:'win32',version:'3.2.4',updateCapable:true}),
+  getInfo:async()=>({platform:'win32',version:'3.3.0',updateCapable:true}),
   getUpdateState:async()=>{context.calls.push({method:'getUpdateState'});return outcome();},
   configureUpdates:async config=>{
    context.calls.push({method:'configureUpdates',config:copy(config)});
@@ -50,7 +50,7 @@ async function main(){
  const project=()=>plain(w.StudioApp.getProject());
  const invokeCount=method=>controls.calls.filter(call=>call.method===method).length;
  await w.StudioApp.ready;await until(()=>invokeCount('getUpdateState')>0,'initial updater state');
- assert.equal(w.StudioApp.version,'3.2.4');assert.equal(w.StudioCore.VERSION,3);
+ assert.equal(w.StudioApp.version,'3.3.0');assert.equal(w.StudioCore.VERSION,3);
  click(IDS.button);await until(()=>$(IDS.dialog).open,'open updates dialog');
  assert.match($(IDS.status).textContent,/kaynağı henüz ayarlanmadı/);
  assert.equal($(IDS.check).disabled,true);assert.equal($('updateSourceDetails').open,true);
@@ -63,16 +63,16 @@ async function main(){
  await until(()=>/HTTPS/.test($(IDS.message).textContent),'invalid HTTPS source explanation');
  assert.equal(invokeCount('configureUpdates'),invalidBefore,'Invalid HTTP never reaches native host');
  for(const bad of ['javascript:alert(1)','https://user:password@example.com/latest.json','https://example.com/feed#fragment','https://example.com/\\evil'])assert.throws(()=>w.StudioUpdates.sourceUrl(bad));
- assert.equal(w.StudioUpdates.sourceUrl('Turkish_Vito/karevo'),'https://gitlab.com/Turkish_Vito/karevo/-/releases/permalink/latest/downloads/latest.json');
+ assert.equal(w.StudioUpdates.sourceUrl('Turkish_Vito/inkreel'),'https://gitlab.com/Turkish_Vito/inkreel/-/releases/permalink/latest/downloads/latest.json');
  assert.equal(w.StudioUpdates.sourceUrl('group/sub/karevo'),'https://gitlab.com/group/sub/karevo/-/releases/permalink/latest/downloads/latest.json');
- assert.equal(w.StudioUpdates.sourceUrl('https://gitlab.com/Turkish_Vito/karevo'),'https://gitlab.com/Turkish_Vito/karevo/-/releases/permalink/latest/downloads/latest.json');
- assert.equal(w.StudioUpdates.sourceUrl('https://gitlab.com/Turkish_Vito/karevo.git/'),'https://gitlab.com/Turkish_Vito/karevo/-/releases/permalink/latest/downloads/latest.json');
- assert.equal(w.StudioUpdates.sourceUrl('https://gitlab.com/Turkish_Vito/karevo/-/releases/v1.0.0'),'https://gitlab.com/Turkish_Vito/karevo/-/releases/v1.0.0');
+ assert.equal(w.StudioUpdates.sourceUrl('https://gitlab.com/Turkish_Vito/inkreel'),'https://gitlab.com/Turkish_Vito/inkreel/-/releases/permalink/latest/downloads/latest.json');
+ assert.equal(w.StudioUpdates.sourceUrl('https://gitlab.com/Turkish_Vito/inkreel.git/'),'https://gitlab.com/Turkish_Vito/inkreel/-/releases/permalink/latest/downloads/latest.json');
+ assert.equal(w.StudioUpdates.sourceUrl('https://gitlab.com/Turkish_Vito/inkreel/-/releases/v1.0.0'),'https://gitlab.com/Turkish_Vito/inkreel/-/releases/v1.0.0');
  assert.equal(w.StudioUpdates.sourceUrl('https://updates.example.com/stable/latest.json'),'https://updates.example.com/stable/latest.json');
- input(IDS.feed,'Turkish_Vito/karevo');input(IDS.auto,false);click(IDS.save);
+ input(IDS.feed,'Turkish_Vito/inkreel');input(IDS.auto,false);click(IDS.save);
  await until(()=>controls.state.configured&&$(IDS.check).disabled===false,'source saved');
  const configured=controls.calls.filter(call=>call.method==='configureUpdates').at(-1).config;
- assert.deepEqual(configured,{feedUrl:'https://gitlab.com/Turkish_Vito/karevo/-/releases/permalink/latest/downloads/latest.json',autoCheck:false});
+ assert.deepEqual(configured,{feedUrl:'https://gitlab.com/Turkish_Vito/inkreel/-/releases/permalink/latest/downloads/latest.json',autoCheck:false});
  assert.equal($(IDS.auto).checked,false,'Typed auto-check choice survives redraw');
  assert.equal($(IDS.feed).value,configured.feedUrl);
  check('Source validation and GitLab normalization preserve edited source and auto-check preference');

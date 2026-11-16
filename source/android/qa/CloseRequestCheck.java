@@ -1,4 +1,4 @@
-package com.karevo.studio;
+package com.inkreel.studio;
 
 /** Executes the production token guard on a JVM; no Android framework mocks. */
 public final class CloseRequestCheck {

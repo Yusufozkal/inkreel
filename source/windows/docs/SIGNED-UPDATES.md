@@ -34,14 +34,14 @@ Kurucu tamamlanıp doğrulandıktan sonra:
 ```sh
 node scripts/sign-update.cjs \
   --installer installer/out/Bulten-Studio-3.1.0-Setup.exe \
-  --url https://gitlab.com/Turkish_Vito/karevo/-/releases/v3.1.0/downloads/Bulten-Studio-3.1.0-Setup.exe \
+  --url https://gitlab.com/Turkish_Vito/inkreel/-/releases/v3.1.0/downloads/Bulten-Studio-3.1.0-Setup.exe \
   --version 3.1.0 --sequence 30100 \
   --notes-file release-notes.txt \
   --key /GUVENLI/KONUM/private-key.pem \
   --out release/latest.json
 ```
 
-Örnekteki sürüm ve dosya adı yer tutucudur; gerçek yayın URL'si verilmeden bu örnek canlı bir güncelleme kaynağı değildir. Kurucu ve `latest.json` aynı sürüm yayınına eklenir; GitLab'ın `https://gitlab.com/Turkish_Vito/karevo/-/releases/permalink/latest/downloads/latest.json` kalıcı adresi istemci için sabit besleme adresi olarak kullanılabilir. İlk güncelleme destekli sürüm bir kez elle kurulmalıdır; önceden dağıtılan 3.0.0 sürümünde güncelleme istemcisi yoktur.
+Örnekteki sürüm ve dosya adı yer tutucudur; gerçek yayın URL'si verilmeden bu örnek canlı bir güncelleme kaynağı değildir. Kurucu ve `latest.json` aynı sürüm yayınına eklenir; GitLab'ın `https://gitlab.com/Turkish_Vito/inkreel/-/releases/permalink/latest/downloads/latest.json` kalıcı adresi istemci için sabit besleme adresi olarak kullanılabilir. İlk güncelleme destekli sürüm bir kez elle kurulmalıdır; önceden dağıtılan 3.0.0 sürümünde güncelleme istemcisi yoktur.
 
 Araç, kurucunun gerçek dosya adını, boyutunu ve SHA-256 özetini hesaplar. Dosyanın imzalama sırasında değişmediğini kontrol eder. Yayın notları düz metindir. Komut çıktısı yalnız sürüm, dosya özeti ve genel anahtar kimliği içerir; özel anahtar yazdırılmaz.
 
