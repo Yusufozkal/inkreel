@@ -4,6 +4,6 @@ const javaRoot=process.env.KAREVO_JAVA_HOME||process.env.BULTEN_JAVA_HOME||proce
 if(!javaRoot)throw Error('Set JAVA_HOME or KAREVO_JAVA_HOME to the installed JDK.');
 const folder=fs.mkdtempSync(path.join(os.tmpdir(),'bulten-native-close-'));
 try {
- execFileSync(path.join(javaRoot,'bin/javac'),['--release','8','-Xlint:-options','-d',folder,path.join(__dirname,'../native/src/com/karevo/studio/CloseRequest.java'),path.join(__dirname,'CloseRequestCheck.java')],{stdio:'inherit'});
- execFileSync(path.join(javaRoot,'bin/java'),['-cp',folder,'com.karevo.studio.CloseRequestCheck'],{stdio:'inherit'});
+ execFileSync(path.join(javaRoot,'bin/javac'),['--release','8','-Xlint:-options','-d',folder,path.join(__dirname,'../native/src/com/inkreel/studio/CloseRequest.java'),path.join(__dirname,'CloseRequestCheck.java')],{stdio:'inherit'});
+ execFileSync(path.join(javaRoot,'bin/java'),['-cp',folder,'com.inkreel.studio.CloseRequestCheck'],{stdio:'inherit'});
 } finally { fs.rmSync(folder,{recursive:true,force:true}); }

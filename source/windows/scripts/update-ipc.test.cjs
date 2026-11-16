@@ -23,7 +23,7 @@ async function boot(options = {}) {
       calls.push(['launch', value]);
       const backupDir = path.join(temp,'update-backups');
       const names = await fs.readdir(backupDir);
-      assert(names.some(name=>name.endsWith('.karevo')), 'Backup must exist before launching');
+      assert(names.some(name=>name.endsWith('.inkreel')), 'Backup must exist before launching');
       if (options.launchError) throw Error('Kurucu başlatılamadı.');
       return {path:path.join(temp,'verified.exe'),version:'3.2.0'};
     }
@@ -121,7 +121,7 @@ test('successful update handoff backs up before launch then closes without a sec
   const b=await boot();
   try{
     const json='{"schema":"bulten-studio-project","name":"Kayıtlı tasarım","boards":[]}';
-    const result=await b.invoke('studio:update-install',json);assert.equal(result.ok,true);assert.equal(result.installing,true);assert.match(result.backupName,/\.karevo$/);
+    const result=await b.invoke('studio:update-install',json);assert.equal(result.ok,true);assert.equal(result.installing,true);assert.match(result.backupName,/\.inkreel$/);
     assert.equal(await fs.readFile(path.join(b.temp,'update-backups',result.backupName),'utf8'),json);
     assert.equal(b.calls.find(call=>call[0]==='launch')[1].parentPid,process.pid);
     assert.equal(b.win.destroyed,false,'Response is delivered before closing');

@@ -1,4 +1,4 @@
-package com.karevo.studio;
+package com.inkreel.studio;
 
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -63,13 +63,13 @@ final class ExportData {
     }
 
     static String filename(String value, String extension) {
-        String name = value == null ? "Karevo" : value;
+        String name = value == null ? "Inkreel" : value;
         name = name.replace('\\', '/'); name = name.substring(name.lastIndexOf('/') + 1);
-        name = name.replaceAll("(?i)\\.(png|jpe?g|mp4|webm|karevo|bulten|netice|json|csv|ics|txt|zip)$", "");
+        name = name.replaceAll("(?i)\\.(png|jpe?g|mp4|webm|inkreel|karevo|bulten|netice|json|csv|ics|txt|zip)$", "");
         name = Normalizer.normalize(name.replace('ı', 'i').replace('İ', 'I'), Normalizer.Form.NFD).replaceAll("\\p{M}", "");
         name = name.replaceAll("[^A-Za-z0-9._-]", "_").replaceAll("^\\.+", "").replaceAll("[. ]+$", "");
         if (name.length() > 90) name = name.substring(0, 90);
-        if (name.isEmpty()) name = "Karevo";
+        if (name.isEmpty()) name = "Inkreel";
         return name + extension;
     }
 

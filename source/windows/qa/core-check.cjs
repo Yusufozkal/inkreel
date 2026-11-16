@@ -8,7 +8,7 @@ async function main() {
   const project = Core.createProject();
   assert.equal(project.schema, 'bulten-studio-project');
   assert.equal(project.version, 3);
-  assert.equal(Core.projectExtension, 'karevo');
+  assert.equal(Core.projectExtension, 'inkreel');
   assert.equal(project.boards.length, 1);
   assert.equal(project.boards[0].state.photo, '');
   assert.equal(project.boards[0].state.brandName, 'MARKANIZ');

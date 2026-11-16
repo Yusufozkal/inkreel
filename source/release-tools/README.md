@@ -1,4 +1,4 @@
-# Karevo sürüm araçları
+# Inkreel sürüm araçları
 
 Bu klasörde yalnızca sürüm notu şablonu (`release-notes.md`) bulunur.
 
@@ -10,8 +10,8 @@ Eskiden burada, kurucuları 8 MB'lık parçalara bölüp git verisi olarak yükl
 
 ```sh
 cd source/windows
-node scripts/prepare-release.cjs --repo Turkish_Vito/karevo --version 3.2.4 --sequence 30204 \
-  --installer /yol/Karevo-3.2.4-Setup.exe --key /guvenli/yol/update-private.pem \
+node scripts/prepare-release.cjs --repo Turkish_Vito/inkreel --version 3.3.0 --sequence 30300 \
+  --installer /yol/Inkreel-3.3.0-Setup.exe --key /guvenli/yol/update-private.pem \
   --notes-file ../release-tools/release-notes.md
 ```
 

@@ -1614,7 +1614,7 @@ select {
   background: var(--accent-soft);
   box-shadow: 0 0 0 3px #6d5ae033;
 }
-/* Karevo identity and editorial workflow. */
+/* Inkreel identity and editorial workflow. */
 :root {
   --navy: #18243a;
 }
@@ -2816,7 +2816,7 @@ select:focus {
 }
 
 /* ------------------------------------------------------------------
-   Karevo arayüz katmanı: üst çubuk, Dosya menüsü, sekmeler, durum çubuğu.
+   Inkreel arayüz katmanı: üst çubuk, Dosya menüsü, sekmeler, durum çubuğu.
    Önceki kuralların üzerine yazar; renkler :root belirteçlerinden gelir.
    ------------------------------------------------------------------ */
 .topbar {

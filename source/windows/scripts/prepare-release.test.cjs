@@ -11,7 +11,7 @@ const C = require('../native/update-contract.cjs');
 
 function fixture() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'bulten-prepare-'));
-  const version = '3.1.0', installer = path.join(root, 'Karevo-' + version + '-Setup.exe'), keyFile = path.join(root, 'private.pem'), out = path.join(root, 'release'), notes = path.join(root, 'notes.txt');
+  const version = '3.1.0', installer = path.join(root, 'Inkreel-' + version + '-Setup.exe'), keyFile = path.join(root, 'private.pem'), out = path.join(root, 'release'), notes = path.join(root, 'notes.txt');
   const keys = crypto.generateKeyPairSync('ed25519'), pin = C.normalizePublicKey(keys.publicKey.export({ type: 'spki', format: 'pem' }).toString());
   const executable = Buffer.alloc(1024); executable.write('MZ'); executable.writeUInt32LE(128, 0x3c); executable.writeUInt32LE(0x4550, 128); executable.writeUInt16LE(0x14c, 132); executable.write('Installer fixture', 200);
   fs.writeFileSync(installer, executable); fs.writeFileSync(keyFile, keys.privateKey.export({ type: 'pkcs8', format: 'pem' }), { mode: 0o600 }); fs.writeFileSync(notes, 'Bu sürüm test düzeltmelerini içerir.');
@@ -41,7 +41,7 @@ test('--publish invokes glab once with only installer and signed manifest as rel
   try {
     const result = prepareRelease([...f.argv, '--publish'], f.dependencies);
     assert.equal(result.published, true); const gitlab = f.calls.filter(call => call.command === 'glab'); assert.equal(gitlab.length, 1);
-    const command = gitlab[0]; assert.deepEqual(command.args.slice(0, 8), ['release', 'create', 'v3.1.0', path.join(f.out, path.basename(f.installer)), path.join(f.out, 'latest.json'), '--repo', 'example-owner/bulten-updates', '--name']); assert.equal(command.args[8], 'Karevo 3.1.0');
+    const command = gitlab[0]; assert.deepEqual(command.args.slice(0, 8), ['release', 'create', 'v3.1.0', path.join(f.out, path.basename(f.installer)), path.join(f.out, 'latest.json'), '--repo', 'example-owner/bulten-updates', '--name']); assert.equal(command.args[8], 'Inkreel 3.1.0');
     assert.equal(command.options.shell, false); assert(!command.args.includes(f.keyFile)); assert(command.args.includes('--notes-file')); assert.equal(f.logs[0].feed, 'https://gitlab.com/example-owner/bulten-updates/-/releases/permalink/latest/downloads/latest.json'); assert.equal(f.logs.at(-1).published, true);
   } finally { f.cleanup(); }
 });

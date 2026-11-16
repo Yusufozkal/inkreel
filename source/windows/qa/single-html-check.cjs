@@ -1,4 +1,4 @@
-/* Usage: node qa/single-html-check.cjs /path/to/Karevo.html */
+/* Usage: node qa/single-html-check.cjs /path/to/Inkreel.html */
 'use strict';
 const fs=require('node:fs');
 const path=require('node:path');

@@ -45,7 +45,7 @@ function isEntryUrl(url) {
 
 function installHandler(channel, handler, usesDialog = true) {
   ipcMain.handle(channel, async (event, ...args) => {
-    if (!trustedSender(event)) return { ok: false, error: 'Bu işlem yalnızca Karevo içinden kullanılabilir.' };
+    if (!trustedSender(event)) return { ok: false, error: 'Bu işlem yalnızca Inkreel içinden kullanılabilir.' };
     if (usesDialog && (pendingClose || installPending)) return { ok: false, error: 'Uygulama kapanıyor. Dosya işlemi başlatılamadı.' };
     if (usesDialog && fileOperation) return { ok: false, error: 'Açık dosya işlemini tamamlayın.' };
     if (usesDialog) fileOperation = true;
@@ -117,9 +117,9 @@ async function backupBeforeUpdate(json) {
   validateProject(json);
   const directory = path.join(app.getPath('userData'), 'update-backups');
   await fs.mkdir(directory, { recursive: true, mode: 0o700 });
-  const name = 'project-before-update-' + new Date().toISOString().replace(/[:.]/g, '-') + '-' + crypto.randomUUID() + '.karevo';
+  const name = 'project-before-update-' + new Date().toISOString().replace(/[:.]/g, '-') + '-' + crypto.randomUUID() + '.inkreel';
   await atomicWrite(path.join(directory, name), json);
-  const pattern = /^project-before-update-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z-[0-9a-f-]{36}\.(?:karevo|bulten)$/;
+  const pattern = /^project-before-update-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z-[0-9a-f-]{36}\.(?:inkreel|karevo|bulten)$/;
   const entries = await fs.readdir(directory, { withFileTypes: true });
   const older = entries.filter(entry => entry.isFile() && entry.name !== name && pattern.test(entry.name))
     .map(entry => entry.name).sort().reverse();
@@ -270,22 +270,22 @@ function installIpc() {
   installHandler('studio:save-project', async (json, suggestedName) => {
     validateProject(json);
     const result = await dialog.showSaveDialog(mainWindow, {
-      title: 'Karevo projesini kaydet',
-      defaultPath: path.join(app.getPath('documents'), safeName(suggestedName, 'Karevo-Projem', '.karevo')),
-      filters: [{ name: 'Karevo projesi', extensions: ['karevo'] }],
+      title: 'Inkreel projesini kaydet',
+      defaultPath: path.join(app.getPath('documents'), safeName(suggestedName, 'Inkreel-Projem', '.inkreel')),
+      filters: [{ name: 'Inkreel projesi', extensions: ['inkreel'] }],
       properties: ['createDirectory', 'showOverwriteConfirmation']
     });
     if (result.canceled || !result.filePath) return { ok: false, canceled: true };
-    const filename = await chooseFinalPath(result.filePath, '.karevo');
+    const filename = await chooseFinalPath(result.filePath, '.inkreel');
     if (!filename) return { ok: false, canceled: true };
     await atomicWrite(filename, json);
     return { ok: true, name: path.basename(filename) };
   });
   installHandler('studio:open-project', async () => {
     const result = await dialog.showOpenDialog(mainWindow, {
-      title: 'Karevo projesi aç',
+      title: 'Inkreel projesi aç',
       defaultPath: app.getPath('documents'),
-      filters: [{ name: 'Desteklenen proje dosyaları', extensions: ['karevo', 'bulten', 'netice', 'json'] }],
+      filters: [{ name: 'Desteklenen proje dosyaları', extensions: ['inkreel', 'karevo', 'bulten', 'netice', 'json'] }],
       properties: ['openFile']
     });
     if (result.canceled || !result.filePaths[0]) return { ok: false, canceled: true };
@@ -315,7 +315,7 @@ function installIpc() {
   installHandler('studio:save-image', (dataUrl, name) => saveImages([{ dataUrl, name }]));
   installHandler('studio:save-video', (dataUrl, name) => {
     const item = decodeVideo(dataUrl);
-    item.name = safeName(name, 'Karevo-Video', item.ext);
+    item.name = safeName(name, 'Inkreel-Video', item.ext);
     return saveDocument(item, 'Videoyu kaydet', 'videos', item.ext === '.mp4' ? 'MP4 videosu' : 'WebM videosu');
   });
   installHandler('studio:save-text', (text, name) => {
@@ -379,7 +379,7 @@ function installMenu() {
     { label: 'Dosya', submenu: [command('Yeni proje', 'CmdOrCtrl+N', 'new'), command('Proje aç…', 'CmdOrCtrl+O', 'open'), command('Projeyi kaydet…', 'CmdOrCtrl+S', 'save'), { type: 'separator' }, command('Dışa aktar…', 'CmdOrCtrl+E', 'export'), { type: 'separator' }, { label: 'Çıkış', role: 'quit' }] },
     { label: 'Düzenle', submenu: [command('Geri al', 'CmdOrCtrl+Z', 'undo'), command('Yinele', 'CmdOrCtrl+Shift+Z', 'redo'), { type: 'separator' }, { label: 'Kes', role: 'cut' }, { label: 'Kopyala', role: 'copy' }, { label: 'Yapıştır', role: 'paste' }, { label: 'Tümünü seç', role: 'selectAll' }] },
     { label: 'Görünüm', submenu: [{ label: 'Tam ekran', role: 'togglefullscreen' }, { label: 'Yakınlaştır', role: 'zoomIn' }, { label: 'Uzaklaştır', role: 'zoomOut' }, { label: 'Özgün boyut', role: 'resetZoom' }] },
-    { label: 'Yardım', submenu: [command('Kullanım kılavuzu', 'F1', 'help'), command('Güncellemeleri denetle…', undefined, 'updates'), { label: 'Karevo hakkında', click: () => dialog.showMessageBox(mainWindow, { type: 'info', title: 'Karevo', message: 'Karevo ' + app.getVersion(), detail: 'İnternetsiz çalışan içerik, görsel ve video stüdyosu.\nProjeler ve görseller bilgisayarınızda saklanır.', buttons: ['Tamam'] }) }] }
+    { label: 'Yardım', submenu: [command('Kullanım kılavuzu', 'F1', 'help'), command('Güncellemeleri denetle…', undefined, 'updates'), { label: 'Inkreel hakkında', click: () => dialog.showMessageBox(mainWindow, { type: 'info', title: 'Inkreel', message: 'Inkreel ' + app.getVersion(), detail: 'İnternetsiz çalışan içerik, görsel ve video stüdyosu.\nProjeler ve görseller bilgisayarınızda saklanır.', buttons: ['Tamam'] }) }] }
   ]));
 }
 
@@ -391,7 +391,7 @@ function createWindow() {
   const height = Math.min(980, available.height);
   mainWindow = new BrowserWindow({
     width, height, minWidth: Math.min(1120, width), minHeight: Math.min(720, height),
-    title: 'Karevo', backgroundColor: '#10151e',
+    title: 'Inkreel', backgroundColor: '#10151e',
     icon: path.join(__dirname, 'icon.png'), show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
@@ -405,7 +405,7 @@ function createWindow() {
   mainWindow.webContents.on('will-redirect', event => event.preventDefault());
   mainWindow.webContents.on('will-attach-webview', event => event.preventDefault());
   mainWindow.webContents.on('did-fail-load', (_event, code) => {
-    if (code !== -3) dialog.showErrorBox('Karevo açılamadı', 'Uygulama dosyaları okunamadı. Kurulumu yeniden çalıştırın veya taşınabilir paketi tamamen yeni bir klasöre çıkarın.');
+    if (code !== -3) dialog.showErrorBox('Inkreel açılamadı', 'Uygulama dosyaları okunamadı. Kurulumu yeniden çalıştırın veya taşınabilir paketi tamamen yeni bir klasöre çıkarın.');
   });
   mainWindow.once('ready-to-show', () => mainWindow.show());
   mainWindow.on('close', event => {
@@ -445,6 +445,6 @@ else {
     createWindow();
     scheduleAutoUpdateCheck();
     app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) { createWindow(); scheduleAutoUpdateCheck(); } });
-  }).catch(() => { dialog.showErrorBox('Karevo', 'Uygulama başlatılamadı. Dosyaların tamamını çıkardığınızdan emin olun.'); app.quit(); });
+  }).catch(() => { dialog.showErrorBox('Inkreel', 'Uygulama başlatılamadı. Dosyaların tamamını çıkardığınızdan emin olun.'); app.quit(); });
   app.on('window-all-closed', () => { clearTimeout(autoUpdateTimer); if (process.platform !== 'darwin') app.quit(); });
 }

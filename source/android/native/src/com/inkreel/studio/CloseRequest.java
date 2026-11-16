@@ -1,4 +1,4 @@
-package com.karevo.studio;
+package com.inkreel.studio;
 
 /** Correlates asynchronous saves and timeout dialogs with one Back request. */
 final class CloseRequest {

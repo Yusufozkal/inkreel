@@ -12,12 +12,12 @@ root = Path(__file__).resolve().parent
 project = root.parent
 package = json.loads((project / 'package.json').read_text(encoding='utf-8'))
 version = package['version']
-output = root / 'out' / ('Karevo-' + version + '-Setup.exe')
+output = root / 'out' / ('Inkreel-' + version + '-Setup.exe')
 local_archive_tool = root / 'toolchain' / '7zip' / 'usr' / 'lib' / '7zip' / '7z'
 archive_tool = os.environ.get('KAREVO_7ZIP') or (str(local_archive_tool) if local_archive_tool.is_file() else shutil.which('7zz') or shutil.which('7z'))
 assert archive_tool, 'Install 7-Zip or set KAREVO_7ZIP to its executable'
 payload = root / ('payload-tr-en-' + version)
-original = project / 'dist' / 'Karevo-win32-x64'
+original = project / 'dist' / 'Inkreel-win32-x64'
 manifest = json.loads((root / ('payload-manifest-' + version + '.json')).read_text(encoding='utf-8'))
 max_installer_bytes = json.loads(subprocess.check_output(
     ['node', '-e', 'process.stdout.write(JSON.stringify(require("./native/update-contract.cjs").MAX_INSTALLER_BYTES))'],
@@ -104,18 +104,27 @@ assert '/UPDATEPID=' in script and '/RESTARTAPP' in script
 assert 'kernel32::OpenProcess' in script and 'kernel32::WaitForSingleObject(p r0, i 60000)' in script
 assert 'kernel32::CloseHandle' in script
 assert 'Call WaitForUpdateParent' in script and 'Call CheckInstallSpace' in script
-assert script.index('Call WaitForUpdateParent') < script.index('Section "Karevo"')
-assert script.index('Call CheckInstallSpace') < script.index('Delete "$INSTDIR\\Karevo.exe"')
-assert 'Exec \'"$INSTDIR\\Karevo.exe"\'' in script
+assert script.index('Call WaitForUpdateParent') < script.index('Section "Inkreel"')
+assert script.index('Call CheckInstallSpace') < script.index('Delete "$INSTDIR\\Inkreel.exe"')
+assert 'Exec \'"$INSTDIR\\Inkreel.exe"\'' in script
 assert '${If} ${Silent}' in script and '$RestartAfterUpdate == 1' in script
-assert 'InstallDir "$LOCALAPPDATA\\Programs\\Karevo"' in script
+assert 'InstallDir "$LOCALAPPDATA\\Programs\\Inkreel"' in script
 assert 'InstallDirRegKey HKCU "Software\\BultenStudio" "InstallDir"' in script
-install_section = script[script.index('Section "Karevo" SEC_APP'):script.index('SectionEnd', script.index('Section "Karevo" SEC_APP'))]
-assert install_section.index('Call CheckInstalledAppsClosed') < install_section.index('Delete "$INSTDIR\\Karevo.exe"')
+install_section = script[script.index('Section "Inkreel" SEC_APP'):script.index('SectionEnd', script.index('Section "Inkreel" SEC_APP'))]
+assert install_section.index('Call CheckInstalledAppsClosed') < install_section.index('Delete "$INSTDIR\\Inkreel.exe"')
 assert install_section.index('Call CheckInstalledAppsClosed') < install_section.index('Delete "$INSTDIR\\Bulten Studio.exe"')
 assert 'i 0x40010000, i 0, p 0, i 3' in script, 'Both old/new executable checks must use non-truncating OPEN_EXISTING with exclusive write/delete access'
 assert 'Call un.CheckInstalledAppsClosed' in script
-assert 'Karevo.exe' in installed_paths and 'Bulten Studio.exe' not in installed_paths
+for legacy in ('Karevo.exe', 'Bulten Studio.exe'):
+    assert 'StrCpy $0 "$INSTDIR\\' + legacy + '"' in script, 'Old executable must be checked for locks: ' + legacy
+    assert install_section.index('Delete "$INSTDIR\\' + legacy + '"') < install_section.index('File /r'), 'Old executable must be removed before install: ' + legacy
+assert install_section.index('Delete "$DESKTOP\\Karevo.lnk"') < install_section.index('CreateShortCut "$DESKTOP\\Inkreel.lnk"')
+assert 'RMDir "$SMPROGRAMS\\Karevo"' in install_section and 'CreateShortCut "$SMPROGRAMS\\Inkreel\\Inkreel.lnk" "$INSTDIR\\Inkreel.exe"' in install_section
+assert '"DisplayIcon" \'"$INSTDIR\\Inkreel.exe",0\'' in install_section
+uninstall_section = script[script.index('Section "Uninstall"'):]
+for item in ('Inkreel.exe', 'Karevo.exe', 'Bulten Studio.exe'):
+    assert 'Delete "$INSTDIR\\' + item + '"' in uninstall_section
+assert 'Inkreel.exe' in installed_paths and 'Bulten Studio.exe' not in installed_paths
 
 
 digest = hashlib.file_digest(output.open('rb'), 'sha256').hexdigest()

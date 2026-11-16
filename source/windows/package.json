@@ -1,9 +1,9 @@
 {
-  "name": "karevo",
-  "version": "3.2.4",
+  "name": "inkreel",
+  "version": "3.3.0",
   "description": "Bağımsız yayıncılar için çevrimdışı içerik stüdyosu",
-  "productName": "Karevo",
-  "author": "Karevo",
+  "productName": "Inkreel",
+  "author": "Inkreel",
   "license": "UNLICENSED",
   "private": true,
   "main": "native/main.cjs",

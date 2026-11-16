@@ -1,4 +1,4 @@
-/* Karevo: Promise adapter for the Android WebView host. */
+/* Inkreel: Promise adapter for the Android WebView host. */
 (function (root) {
   'use strict';
 
@@ -71,7 +71,7 @@
       if (Number.isSafeInteger(message.count) && message.count >= 0) result.count = message.count;
       if (entry.action === 'info') {
         result.platform = 'android';
-        result.version = '3.1.3';
+        result.version = '3.3.0';
       }
       settle(message.id, result);
     } catch (_) {

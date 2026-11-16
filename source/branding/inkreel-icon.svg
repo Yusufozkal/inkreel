@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">Inkreel</title>
+  <desc id="description">Inkreel uygulama simgesi: lacivert zemin üzerinde mor mürekkep damlası ve içinde beyaz oynat işareti.</desc>
+  <rect width="512" height="512" rx="112" fill="#18243a"/>
+  <path fill="#6d5ae0" d="M256 70c0 0-130 150-130 248a130 130 0 0 0 260 0C386 220 256 70 256 70z"/>
+  <path fill="#fff" stroke="#fff" stroke-width="18" stroke-linejoin="round" d="M222 250v136l112-68z"/>
+</svg>

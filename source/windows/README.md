@@ -1,4 +1,4 @@
-# Karevo 3.2.4
+# Inkreel 3.3.0
 
 Yayıncılar ve sosyal medya editörleri için Türkçe, çevrimdışı içerik atölyesi. Windows masaüstü uygulaması ve kurulumsuz HTML sürümü aynı proje biçimini kullanır.
 
@@ -10,7 +10,7 @@ Yayıncılar ve sosyal medya editörleri için Türkçe, çevrimdışı içerik 
 4. **Yayın** panelinde açıklama, alternatif metin, HTTPS kaynak bağlantısı, yayın tarihi ve durum ekle. Üstteki takvim düğmesinden listeyi CSV, takvimi ICS olarak al. Bu, yerel hazırlık takvimidir; sosyal hesaba otomatik göndermez.
 5. Izgara düğmesi son dokuz çalışmanın yan yana görünümünü açar. Kapaklar önizlemede 3:4 kırpılır; asıl çıktı değişmez.
 6. **Video** açık tasarımı 5, 10 veya 15 saniyelik sessiz yakınlaşma/kayma/açılış animasyonuna dönüştürür. 720/1080 piksel genişlik, mevcut tasarım oranı. MP4 yalnızca ortam destekliyorsa, diğer durumda WebM. Kayıt sırasında pencereyi görünür tut. **Video düzenle** ile ayrıca yerel MP4/WebM klibini zaman çizelgesinde kes, kadrajını ve ses seviyesini değiştir, yazı ekle. Tek klip çıktısı 0,25–60 saniyedir; çok kanallı montaj ve otomatik altyazı bu sürümde bulunmaz.
-7. **Kaydet** ile `.karevo` dosyasını yedekle. Fotoğraflar, katmanlar, markalar, şablonlar ve yayın bilgileri birlikte taşınır. Eski `.bulten`, `.netice` v2 dosyaları açılır; kayıtta yeni biçime geçer. Eski uygulamanın kayıtları otomatik taşınmaz.
+7. **Kaydet** ile `.inkreel` dosyasını yedekle. Fotoğraflar, katmanlar, markalar, şablonlar ve yayın bilgileri birlikte taşınır. Eski `.karevo`, `.bulten`, `.netice` v2 dosyaları açılır; kayıtta yeni biçime geçer. Eski uygulamanın kayıtları otomatik taşınmaz.
 
 Dört çıktı oranı, PNG/JPG, 1×–3× çözünürlük, tek işlemde 24 görsele kadar toplu çıktı, geri al/yinele, kilitlenen katmanlar, yerel proje arşivi ve otomatik kayıt desteklenir. Arşiv ve otomatik kayıt kullanılan cihaz/tarayıcıya bağlıdır; ayrıca proje dosyasını saklayın.
 
@@ -18,7 +18,7 @@ Dört çıktı oranı, PNG/JPG, 1×–3× çözünürlük, tek işlemde 24 görs
 
 `npm ci` ardından `npm start`. Windows paketi için `npm run build:win`. Tarayıcı sürümleri için `node scripts/package-browser.cjs`. Kurucu derlemesi ve kontrolü `installer/` altında. NSIS araç zinciri ve Electron indirmesi gerekir.
 
-Testler: `npm run test:native`, `node qa/core-check.cjs`, `node qa/renderer-check.cjs`, `node qa/workflow-check.cjs`, `node qa/video-check.cjs`, `node qa/dom-check.cjs`. QA bağımlılıkları `qa/package.json` üzerinden kurulur. HTML kontrolü `node qa/single-html-check.cjs dist/Karevo.html`.
+Testler: `npm run test:native`, `node qa/core-check.cjs`, `node qa/renderer-check.cjs`, `node qa/workflow-check.cjs`, `node qa/video-check.cjs`, `node qa/dom-check.cjs`. QA bağımlılıkları `qa/package.json` üzerinden kurulur. HTML kontrolü `node qa/single-html-check.cjs dist/Inkreel.html`.
 
 Bu ortamda kontroller Node, jsdom ve Napi Canvas ile yapılır. Gerçek Windows kurulumu, tarayıcı yerleşimi ve işletim sisteminin video kodlayıcısı ayrıca cihaz üzerinde denenmelidir. Windows kurulum dosyası kod imzası içermez.
 

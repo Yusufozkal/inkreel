@@ -21,8 +21,8 @@ if (!process.env.ELECTRON_GET_USE_PROXY && (process.env.HTTPS_PROXY || process.e
     dir: root,
     out: path.join(root, 'dist'),
     platform, arch: 'x64', electronVersion: pkg.devDependencies.electron,
-    name: 'Karevo', appBundleId: 'com.bultenstudio.app',
-    executableName: 'Karevo',
+    name: 'Inkreel', appBundleId: 'com.bultenstudio.app',
+    executableName: 'Inkreel',
     appVersion: pkg.version, buildVersion: pkg.version,
     appCopyright: pkg.author,
     icon: path.join(root, 'native', platform === 'win32' ? 'icon.ico' : 'icon.png'),
@@ -31,19 +31,19 @@ if (!process.env.ELECTRON_GET_USE_PROXY && (process.env.HTTPS_PROXY || process.e
       const normalized = '/' + filename.replace(/\\/g, '/').replace(/^\/+/, '');
       return normalized !== '/' && normalized !== '/package.json' && !/^\/(?:ui|native)(?:\/|$)/.test(normalized);
     },
-    win32metadata: { CompanyName: pkg.author, FileDescription: pkg.productName, InternalName: 'Karevo', OriginalFilename: 'Karevo.exe', ProductName: pkg.productName }
+    win32metadata: { CompanyName: pkg.author, FileDescription: pkg.productName, InternalName: 'Inkreel', OriginalFilename: 'Inkreel.exe', ProductName: pkg.productName }
   });
   const folder = outputs[0];
   if ((await fs.readFile(path.join(folder, 'version'), 'utf8')).trim() !== pkg.devDependencies.electron) throw new Error('Packaged Electron does not match the pinned release.');
-  const help = 'KAREVO ' + pkg.version + '\r\n\r\n' +
-    (platform === 'win32' ? 'Karevo uygulamasını Masaüstü veya Başlat menüsündeki kısayoldan başlatın. Taşınabilir paket kullanıyorsanız klasörü bütünüyle çıkarın ve Karevo.exe dosyasını açın; EXE dosyasını diğer dosyalardan ayrı taşımayın.\r\nWindows 10/11, 64 bit.\r\n' : 'Klasörü tamamen çıkarın ve Karevo programını başlatın.\n') +
-    '\r\nProgram internetsiz çalışır. Projeler .karevo dosyası olarak kaydedilir; önceki .bulten, .netice ve JSON projeleri de açılabilir.\r\nToplu çıktı klasöründeki mevcut dosyalar korunur; ad çakışınca sayı eklenir.\r\n\r\nPaketin Windows Authenticode yayıncı imzası yoktur; Windows yayıncıyı tanımıyor uyarısı gösterebilir. Güncelleme dosyaları ayrıca uygulamadaki sabit açık anahtarla doğrulanır.\r\nBu sürüm Linux üzerinde paketlendi; Windows cihaz testi yapılmadı.\r\n\r\nElectron ve Chromium lisansları LICENSE ve LICENSES.chromium.html dosyalarındadır.\r\nYazı tipi lisansları resources/app.asar içindeki ui/assets/licenses klasöründedir.\r\n';
+  const help = 'INKREEL ' + pkg.version + '\r\n\r\n' +
+    (platform === 'win32' ? 'Inkreel uygulamasını Masaüstü veya Başlat menüsündeki kısayoldan başlatın. Taşınabilir paket kullanıyorsanız klasörü bütünüyle çıkarın ve Inkreel.exe dosyasını açın; EXE dosyasını diğer dosyalardan ayrı taşımayın.\r\nWindows 10/11, 64 bit.\r\n' : 'Klasörü tamamen çıkarın ve Inkreel programını başlatın.\n') +
+    '\r\nProgram internetsiz çalışır. Projeler .inkreel dosyası olarak kaydedilir; önceki .karevo, .bulten, .netice ve JSON projeleri de açılabilir.\r\nToplu çıktı klasöründeki mevcut dosyalar korunur; ad çakışınca sayı eklenir.\r\n\r\nPaketin Windows Authenticode yayıncı imzası yoktur; Windows yayıncıyı tanımıyor uyarısı gösterebilir. Güncelleme dosyaları ayrıca uygulamadaki sabit açık anahtarla doğrulanır.\r\nBu sürüm Linux üzerinde paketlendi; Windows cihaz testi yapılmadı.\r\n\r\nElectron ve Chromium lisansları LICENSE ve LICENSES.chromium.html dosyalarındadır.\r\nYazı tipi lisansları resources/app.asar içindeki ui/assets/licenses klasöründedir.\r\n';
   await fs.writeFile(path.join(folder, 'BASLANGIC.txt'), help, 'utf8');
   if (nozip) {
     console.log(JSON.stringify({ folder, version: pkg.version, archive: null, reason: '--nozip' }, null, 2));
     return;
   }
-  const basename = platform === 'win32' ? `Karevo-${pkg.version}-Windows-x64` : `Karevo-${pkg.version}-Linux-x64`;
+  const basename = platform === 'win32' ? `Inkreel-${pkg.version}-Windows-x64` : `Inkreel-${pkg.version}-Linux-x64`;
   const archive = path.join(root, 'dist', basename + '.zip');
   await fs.rm(archive, { force: true });
   execFileSync('zip', ['-q', '-r', '-9', archive, path.basename(folder)], { cwd: path.dirname(folder), stdio: 'inherit' });

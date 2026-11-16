@@ -1,4 +1,4 @@
-package com.karevo.studio;
+package com.inkreel.studio;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -17,7 +17,7 @@ import java.util.Locale;
 
 /** Shares completed image exports through temporary, read-only URI grants. */
 public final class ExportProvider extends ContentProvider {
-    public static final String AUTHORITY = "com.karevo.studio.exports";
+    public static final String AUTHORITY = "com.inkreel.studio.exports";
 
     @Override
     public boolean onCreate() {

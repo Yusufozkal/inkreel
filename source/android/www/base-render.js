@@ -1,4 +1,4 @@
-/* Karevo — local, deterministic Canvas renderer. No startup or network work. */
+/* Inkreel — local, deterministic Canvas renderer. No startup or network work. */
 (function (global) {
   'use strict';
   var WIDTH = 1080;

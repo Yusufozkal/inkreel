@@ -7,7 +7,7 @@ const crypto = require('node:crypto');
 const { execFileSync } = require('node:child_process');
 
 const root = path.join(__dirname, '..');
-const folder = path.resolve(process.argv.slice(2).find(value => !value.startsWith('--')) || path.join(root, 'dist', 'Karevo-win32-x64'));
+const folder = path.resolve(process.argv.slice(2).find(value => !value.startsWith('--')) || path.join(root, 'dist', 'Inkreel-win32-x64'));
 const nozip = process.argv.includes('--nozip');
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 
@@ -38,8 +38,8 @@ async function walk(dir, prefix) {
   const electronVersion = (await fs.readFile(path.join(folder, 'version'), 'utf8')).trim();
   assert.equal(electronVersion, sourcePackage.devDependencies.electron, 'Runtime must match the pinned Electron release');
   assert.equal(pkg.main, 'native/main.cjs');
-  assert.equal(pkg.productName, 'Karevo');
-  assert.equal(pkg.name, 'karevo');
+  assert.equal(pkg.productName, 'Inkreel');
+  assert.equal(pkg.name, 'inkreel');
   const pin = JSON.parse(extractFile(asarPath, 'native/update-public-key.json').toString('utf8'));
   assert.equal(pin.schema, 'bulten-update-public-key');
   assert.equal(pin.algorithm, 'Ed25519');
@@ -48,7 +48,7 @@ async function walk(dir, prefix) {
   assert.equal(publicKey.asymmetricKeyType, 'ed25519');
   const publicDer = publicKey.export({ type: 'spki', format: 'der' });
   assert.equal(pin.keyId, 'ed25519:' + sha(publicDer).slice(0, 32));
-  const exe = path.join(folder, 'Karevo.exe');
+  const exe = path.join(folder, 'Inkreel.exe');
   const handle = await fs.open(exe, 'r');
   let header = Buffer.alloc(4096);
   try { await handle.read(header, 0, header.length, 0); } finally { await handle.close(); }
@@ -60,7 +60,7 @@ async function walk(dir, prefix) {
   assert.equal(header.readUInt16LE(optional), 0x20b, 'Expected PE32+');
   assert.equal(header.readUInt16LE(optional + 68), 2, 'Expected Windows GUI subsystem');
   const certificateBytes = header.readUInt32LE(optional + 148);
-  const archive = path.join(root, 'dist', `Karevo-${pkg.version}-Windows-x64.zip`);
+  const archive = path.join(root, 'dist', `Inkreel-${pkg.version}-Windows-x64.zip`);
   const result = { platform: 'win32', arch: 'x64', version: pkg.version, electronVersion, productName: pkg.productName, sourceFilesMatch: sourceFiles.length, exactAsarInventory: true, asarSha256: sha(await fs.readFile(asarPath)), runtimeFolder: folder, exeSha256: sha(await fs.readFile(exe)), authenticodeCertificateBytes: certificateBytes, updateVerification: 'pinned Ed25519 public key', updateKeyId: pin.keyId, windowsRuntimeTested: false };
   if (!nozip) {
     execFileSync('unzip', ['-tq', archive], { stdio: 'inherit' });

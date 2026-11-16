@@ -1,4 +1,4 @@
-/* Karevo — portable, offline project and storage core. */
+/* Inkreel — portable, offline project and storage core. */
 (function (root) {
   'use strict';
 
@@ -366,9 +366,9 @@
     };
   }
   function normalizeProject(raw) {
-    if (!object(raw) || ![SCHEMA, 'netice-studio-project'].includes(raw.schema)) throw new Error('Bu dosya bir Karevo projesi değil.');
+    if (!object(raw) || ![SCHEMA, 'netice-studio-project'].includes(raw.schema)) throw new Error('Bu dosya bir Inkreel projesi değil.');
     const legacy = raw.schema === 'netice-studio-project';
-    if (raw.version !== (legacy ? 2 : VERSION)) throw new Error('Bu proje sürümü desteklenmiyor. Karevo sürüm 3 veya eski Netice sürüm 2 proje dosyası seçin.');
+    if (raw.version !== (legacy ? 2 : VERSION)) throw new Error('Bu proje sürümü desteklenmiyor. Inkreel sürüm 3 veya eski Netice sürüm 2 proje dosyası seçin.');
     if (!Array.isArray(raw.boards) || !raw.boards.length) throw new Error('Proje en az bir tasarım içermeli.');
     if (raw.boards.length > MAX_BOARDS) throw new Error('Bir projede en fazla 20 tasarım olabilir.');
     const brandInputs = raw.brands === undefined ? [] : raw.brands;
@@ -655,7 +655,7 @@
   const api = Object.freeze({
     SCHEMA, VERSION, DEFAULTS, DEFAULT_PHOTO, LEGACY_PHOTO, FORMATS, TEMPLATES, FONTS,
     MAX_BOARDS, MAX_LAYERS, MAX_BRANDS, MAX_TEMPLATES, MAX_PROJECT_BYTES, POST_DEFAULTS, BRAND_FIELDS,
-    projectExtension: 'karevo',
+    projectExtension: 'inkreel',
     createProject, normalizeProject, normalizeState, normalizePost, clone, id, dimensions, createBoard, createLayer,
     createBrand, applyBrand, createTemplate, boardFromTemplate,
     loadMedia, importImage, openDatabase, serialize, parse, History

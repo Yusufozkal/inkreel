@@ -17,30 +17,30 @@ Var UpdateParentPid
 Var UpdateParameters
 Var RestartAfterUpdate
 
-Name "Karevo"
+Name "Inkreel"
 OutFile "${OUT_FILE}"
-InstallDir "$LOCALAPPDATA\Programs\Karevo"
+InstallDir "$LOCALAPPDATA\Programs\Inkreel"
 InstallDirRegKey HKCU "Software\BultenStudio" "InstallDir"
-BrandingText "Karevo"
+BrandingText "Inkreel"
 ShowInstDetails show
 ShowUninstDetails show
 
 VIProductVersion "${APP_VERSION_NUMERIC}"
-VIAddVersionKey /LANG=1055 "ProductName" "Karevo"
-VIAddVersionKey /LANG=1055 "CompanyName" "Karevo"
-VIAddVersionKey /LANG=1055 "FileDescription" "Karevo Kurulumu"
+VIAddVersionKey /LANG=1055 "ProductName" "Inkreel"
+VIAddVersionKey /LANG=1055 "CompanyName" "Inkreel"
+VIAddVersionKey /LANG=1055 "FileDescription" "Inkreel Kurulumu"
 VIAddVersionKey /LANG=1055 "FileVersion" "${APP_VERSION_NUMERIC}"
 VIAddVersionKey /LANG=1055 "ProductVersion" "${APP_VERSION}"
-VIAddVersionKey /LANG=1055 "LegalCopyright" "Karevo"
+VIAddVersionKey /LANG=1055 "LegalCopyright" "Inkreel"
 
 !define MUI_ICON "${ICON_PATH}"
 !define MUI_UNICON "${ICON_PATH}"
 !define MUI_ABORTWARNING
-!define MUI_WELCOMEPAGE_TITLE "Karevo ${APP_VERSION}"
-!define MUI_WELCOMEPAGE_TEXT "Bu sihirbaz içerik ve tasarım stüdyosunu bilgisayarınıza kurar.$\r$\n$\r$\nProgram kişisel uygulama klasörünüze kurulur. Yönetici izni gerekmez.$\r$\n$\r$\nKurulumdan sonra Masaüstü veya Başlat menüsündeki Karevo simgesini kullanabilirsiniz."
-!define MUI_FINISHPAGE_RUN "$INSTDIR\Karevo.exe"
-!define MUI_FINISHPAGE_RUN_TEXT "Karevo’yu başlat"
-!define MUI_FINISHPAGE_TEXT "Karevo kullanıma hazır.$\r$\n$\r$\nProgramı Masaüstü veya Başlat menüsündeki simgesinden açabilirsiniz."
+!define MUI_WELCOMEPAGE_TITLE "Inkreel ${APP_VERSION}"
+!define MUI_WELCOMEPAGE_TEXT "Bu sihirbaz içerik ve tasarım stüdyosunu bilgisayarınıza kurar.$\r$\n$\r$\nProgram kişisel uygulama klasörünüze kurulur. Yönetici izni gerekmez.$\r$\n$\r$\nKurulumdan sonra Masaüstü veya Başlat menüsündeki Inkreel simgesini kullanabilirsiniz."
+!define MUI_FINISHPAGE_RUN "$INSTDIR\Inkreel.exe"
+!define MUI_FINISHPAGE_RUN_TEXT "Inkreel’i başlat"
+!define MUI_FINISHPAGE_TEXT "Inkreel kullanıma hazır.$\r$\n$\r$\nProgramı Masaüstü veya Başlat menüsündeki simgesinden açabilirsiniz."
 !define MUI_UNCONFIRMPAGE_TEXT_TOP "Program dosyaları ve kısayollar kaldırılır. Projeleriniz ve otomatik kayıtlı taslaklarınız korunur."
 
 !insertmacro MUI_PAGE_WELCOME
@@ -105,7 +105,7 @@ Function WaitForUpdateParent
     SetErrorLevel 10
     Abort
   parent_wait_failed:
-    MessageBox MB_OK|MB_ICONSTOP "Uygulamanın kapanması beklenemedi. Karevo’yu kapatıp kurulumu yeniden başlatın. Program dosyaları değiştirilmedi." /SD IDOK
+    MessageBox MB_OK|MB_ICONSTOP "Uygulamanın kapanması beklenemedi. Inkreel’i kapatıp kurulumu yeniden başlatın. Program dosyaları değiştirilmedi." /SD IDOK
     SetErrorLevel 11
     Abort
   parent_finished:
@@ -172,6 +172,8 @@ FunctionEnd
 Function ${PREFIX}CheckInstalledAppsClosed
   Push $0
   Push $1
+  StrCpy $0 "$INSTDIR\Inkreel.exe"
+  Call ${PREFIX}CheckExecutableClosed
   StrCpy $0 "$INSTDIR\Karevo.exe"
   Call ${PREFIX}CheckExecutableClosed
   StrCpy $0 "$INSTDIR\Bulten Studio.exe"
@@ -187,7 +189,7 @@ Function ${PREFIX}CheckExecutableClosed
   System::Call 'kernel32::CloseHandle(p r1)'
   Goto executable_check_finished
   executable_check_failed:
-    MessageBox MB_OK|MB_ICONEXCLAMATION "Uygulama dosyası kullanımda veya yazılamıyor. Karevo’yu kapatıp yeniden deneyin. Program dosyaları değiştirilmedi." /SD IDOK
+    MessageBox MB_OK|MB_ICONEXCLAMATION "Uygulama dosyası kullanımda veya yazılamıyor. Inkreel’i kapatıp yeniden deneyin. Program dosyaları değiştirilmedi." /SD IDOK
     SetErrorLevel 14
     Abort
   executable_check_finished:
@@ -196,7 +198,7 @@ FunctionEnd
 !insertmacro DefineInstalledAppsClosed ""
 !insertmacro DefineInstalledAppsClosed "un."
 
-Section "Karevo" SEC_APP
+Section "Inkreel" SEC_APP
   SetShellVarContext current
   SetRegView 64
   SetOutPath "$INSTDIR"
@@ -204,10 +206,12 @@ Section "Karevo" SEC_APP
   ClearErrors
   IfFileExists "$INSTDIR\Bulten Studio.exe" 0 +2
     Delete "$INSTDIR\Bulten Studio.exe"
+  IfFileExists "$INSTDIR\Inkreel.exe" 0 +2
+    Delete "$INSTDIR\Inkreel.exe"
   IfFileExists "$INSTDIR\Karevo.exe" 0 +2
     Delete "$INSTDIR\Karevo.exe"
   ${If} ${Errors}
-    MessageBox MB_OK|MB_ICONEXCLAMATION "Uygulama dosyaları değiştirilemiyor. Karevo’yu kapatıp kurulumu yeniden başlatın."
+    MessageBox MB_OK|MB_ICONEXCLAMATION "Uygulama dosyaları değiştirilemiyor. Inkreel’i kapatıp kurulumu yeniden başlatın."
     Abort
   ${EndIf}
   ClearErrors
@@ -225,16 +229,21 @@ Section "Karevo" SEC_APP
   Delete "$SMPROGRAMS\Bülten Studio\Bülten Studio.lnk"
   Delete "$SMPROGRAMS\Bülten Studio\Kaldır.lnk"
   RMDir "$SMPROGRAMS\Bülten Studio"
-  CreateDirectory "$SMPROGRAMS\Karevo"
-  CreateShortCut "$DESKTOP\Karevo.lnk" "$INSTDIR\Karevo.exe"
-  CreateShortCut "$SMPROGRAMS\Karevo\Karevo.lnk" "$INSTDIR\Karevo.exe"
-  CreateShortCut "$SMPROGRAMS\Karevo\Kaldır.lnk" "$INSTDIR\Uninstall.exe"
+  ; Karevo -> Inkreel: the old Karevo.exe was removed above; drop its shortcuts too.
+  Delete "$DESKTOP\Karevo.lnk"
+  Delete "$SMPROGRAMS\Karevo\Karevo.lnk"
+  Delete "$SMPROGRAMS\Karevo\Kaldır.lnk"
+  RMDir "$SMPROGRAMS\Karevo"
+  CreateDirectory "$SMPROGRAMS\Inkreel"
+  CreateShortCut "$DESKTOP\Inkreel.lnk" "$INSTDIR\Inkreel.exe"
+  CreateShortCut "$SMPROGRAMS\Inkreel\Inkreel.lnk" "$INSTDIR\Inkreel.exe"
+  CreateShortCut "$SMPROGRAMS\Inkreel\Kaldır.lnk" "$INSTDIR\Uninstall.exe"
   WriteRegStr HKCU "Software\BultenStudio" "InstallDir" "$INSTDIR"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\BultenStudio" "DisplayName" "Karevo"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\BultenStudio" "DisplayName" "Inkreel"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\BultenStudio" "DisplayVersion" "${APP_VERSION}"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\BultenStudio" "Publisher" "Karevo"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\BultenStudio" "Publisher" "Inkreel"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\BultenStudio" "InstallLocation" "$INSTDIR"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\BultenStudio" "DisplayIcon" '"$INSTDIR\Karevo.exe",0'
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\BultenStudio" "DisplayIcon" '"$INSTDIR\Inkreel.exe",0'
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\BultenStudio" "UninstallString" '"$INSTDIR\Uninstall.exe"'
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\BultenStudio" "QuietUninstallString" '"$INSTDIR\Uninstall.exe" /S'
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\BultenStudio" "NoModify" 1
@@ -242,7 +251,7 @@ Section "Karevo" SEC_APP
   WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\BultenStudio" "EstimatedSize" ${INSTALLED_KB}
   ${If} ${Silent}
   ${AndIf} $RestartAfterUpdate == 1
-    Exec '"$INSTDIR\Karevo.exe"'
+    Exec '"$INSTDIR\Inkreel.exe"'
   ${EndIf}
 SectionEnd
 
@@ -256,20 +265,26 @@ Section "Uninstall"
   SetRegView 64
   Call un.CheckInstalledAppsClosed
   ClearErrors
+  IfFileExists "$INSTDIR\Inkreel.exe" 0 +2
+    Delete "$INSTDIR\Inkreel.exe"
   IfFileExists "$INSTDIR\Karevo.exe" 0 +2
     Delete "$INSTDIR\Karevo.exe"
   IfFileExists "$INSTDIR\Bulten Studio.exe" 0 +2
     Delete "$INSTDIR\Bulten Studio.exe"
   ${If} ${Errors}
-    MessageBox MB_OK|MB_ICONEXCLAMATION "Uygulama dosyaları değiştirilemiyor. Karevo’yu kapatıp kaldırmayı yeniden başlatın."
+    MessageBox MB_OK|MB_ICONEXCLAMATION "Uygulama dosyaları değiştirilemiyor. Inkreel’i kapatıp kaldırmayı yeniden başlatın."
     Abort
   ${EndIf}
   !include "${UNINSTALL_INCLUDE}"
-  Delete "$DESKTOP\Karevo.lnk"
+  Delete "$DESKTOP\Inkreel.lnk"
   Delete "$DESKTOP\Bülten Studio.lnk"
   Delete "$SMPROGRAMS\Bülten Studio\Bülten Studio.lnk"
   Delete "$SMPROGRAMS\Bülten Studio\Kaldır.lnk"
   RMDir "$SMPROGRAMS\Bülten Studio"
+  Delete "$DESKTOP\Karevo.lnk"
+  Delete "$SMPROGRAMS\Inkreel\Inkreel.lnk"
+  Delete "$SMPROGRAMS\Inkreel\Kaldır.lnk"
+  RMDir "$SMPROGRAMS\Inkreel"
   Delete "$SMPROGRAMS\Karevo\Karevo.lnk"
   Delete "$SMPROGRAMS\Karevo\Kaldır.lnk"
   RMDir "$SMPROGRAMS\Karevo"

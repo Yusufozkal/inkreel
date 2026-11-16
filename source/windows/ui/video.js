@@ -1,4 +1,4 @@
-/* Karevo — local, silent animated news exports via the browser encoder. */
+/* Inkreel — local, silent animated news exports via the browser encoder. */
 (function (global) {
   'use strict';
   var MAX_BYTES = 40 * 1024 * 1024;
@@ -178,7 +178,7 @@
       if(!isContainer(header,format))throw new Error('Kodlayıcı seçilen biçimde geçerli bir video üretmedi. Diğer biçimi deneyin.');
       var dataUrl=await readBlob(blob,'readAsDataURL',signal);
       throwIfAborted(signal);report(1);
-      return {blob:blob,dataUrl:dataUrl,mime:mime,width:width,height:height,duration:duration,name:'Karevo-'+width+'x'+height+'.'+format};
+      return {blob:blob,dataUrl:dataUrl,mime:mime,width:width,height:height,duration:duration,name:'Inkreel-'+width+'x'+height+'.'+format};
     } finally {
       if(recorder&&recorder.state!=='inactive'){try{recorder.stop();}catch(_){}}
       cleanup();active=false;
