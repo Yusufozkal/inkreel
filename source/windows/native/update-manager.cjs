@@ -7,6 +7,7 @@ const https = require('node:https');
 const { spawn } = require('node:child_process');
 const { constants: fsConstants } = require('node:fs');
 const contract = require('./update-contract.cjs');
+const { DEFAULT_FEEDS, mirrorUrls } = require('./update-sources.cjs');
 
 const MAX_META = contract.MAX_ENVELOPE_BYTES;
 const REDIRECT_CODES = new Set([301, 302, 303, 307, 308]);
@@ -90,6 +91,7 @@ class UpdateManager {
     this._latestPath = path.join(this._cacheDir, 'latest.json');
     this._publicKey = options.publicKey;
     this._supported = (options.platform || 'win32') === 'win32' && (options.arch || 'x64') === 'x64';
+    this._defaultFeeds = Object.freeze((options.defaultFeeds || DEFAULT_FEEDS).map(url => contract.validateFeedUrl(url)));
     this._transport = options.transport || openHttps;
     this._spawn = options.spawnInstaller || spawn;
     this._onState = typeof options.onState === 'function' ? options.onState : () => {};
@@ -99,7 +101,7 @@ class UpdateManager {
     this._busy = null;
     this._initPromise = null;
     this._state = { status: this._supported ? 'idle' : 'disabled', currentVersion: this._version,
-      latestVersion: '', notes: '', progress: 0, feedUrl: '', autoCheck: true, configured: false,
+      latestVersion: '', notes: '', progress: 0, feedUrl: '', autoCheck: true, configured: this._supported,
       lastCheckedAt: '', error: '', downloadBytes: 0, totalBytes: 0, canDownload: false, canInstall: false };
   }
   getState() { return clone(this._state); }
@@ -108,14 +110,14 @@ class UpdateManager {
     // verified release. Recheck the saved candidate against the current replay
     // floor; the last request's error is independent of those capabilities.
     let candidate = null;
-    if (this._supported && this._settings.feedUrl && this._candidate) {
+    if (this._supported && this._candidate) {
       try {
         const checked = this._verify(this._candidate.raw);
         if (checked.isNewer) candidate = checked.payload;
       } catch { /* Invalid or superseded metadata cannot enable an action. */ }
     }
     Object.assign(this._state, patch, {
-      feedUrl: this._settings.feedUrl, configured: !!this._settings.feedUrl,
+      feedUrl: this._settings.feedUrl, configured: this._supported,
       autoCheck: this._settings.autoCheck, lastCheckedAt: this._settings.lastCheckedAt,
       canDownload: !!candidate,
       canInstall: !!candidate && this._downloadedSha === candidate.installer.sha256
@@ -172,7 +174,7 @@ class UpdateManager {
     } catch (error) {
       if (error.code !== 'ENOENT') this._emit({ status: this._supported ? 'error' : 'disabled', error: 'Güncelleme ayarları okunamadı. Güncelleme adresini yeniden kaydedin.' });
     }
-    if (this._supported && this._settings.feedUrl) {
+    if (this._supported) {
       try {
         const raw = await this._readBoundedFile(this._latestPath, MAX_META);
         const checked = this._verify(raw);
@@ -227,7 +229,6 @@ class UpdateManager {
   }
   _requireReady() {
     if (!this._supported) throw message('Otomatik güncelleme bu platformda desteklenmiyor.');
-    if (!this._settings.feedUrl) throw message('Önce güncelleme adresini kaydedin.');
   }
   async configure(options) {
     return this._run('configure', async () => {
@@ -294,23 +295,33 @@ class UpdateManager {
       if (iterator && typeof iterator.return === 'function') Promise.resolve(iterator.return()).catch(() => {});
     }
   }
+  async _fetchFeed(url) {
+    const network = this._network(30000, 15000);
+    try {
+      const response = await this._response(url, network);
+      let length;
+      try { length = contentLength(response, MAX_META); }
+      catch (error) { if (typeof response.close === 'function') response.close(); throw error; }
+      const parts = []; let received = 0;
+      await this._readBody(response, network, chunk => { received += chunk.length; if (received > MAX_META) throw message('Güncelleme bilgisi izin verilen boyutu aşıyor.'); parts.push(chunk); });
+      if (length !== null && length !== received) throw message('Güncelleme bilgisi eksik indirildi.');
+      return Buffer.concat(parts, received);
+    } finally { network.finish(); }
+  }
   async check() {
     return this._run('check', async () => {
       this._requireReady();
       this._emit({ status: 'checking', error: '', progress: 0 });
-      const network = this._network(30000, 15000);
-      let raw;
-      try {
-        const response = await this._response(this._settings.feedUrl, network);
-        let length;
-        try { length = contentLength(response, MAX_META); }
-        catch (error) { if (typeof response.close === 'function') response.close(); throw error; }
-        const parts = []; let received = 0;
-        await this._readBody(response, network, chunk => { received += chunk.length; if (received > MAX_META) throw message('Güncelleme bilgisi izin verilen boyutu aşıyor.'); parts.push(chunk); });
-        if (length !== null && length !== received) throw message('Güncelleme bilgisi eksik indirildi.');
-        raw = Buffer.concat(parts, received);
-      } finally { network.finish(); }
-      const checked = this._verify(raw);
+      const feeds = [...new Set([this._settings.feedUrl, ...this._defaultFeeds].filter(Boolean))];
+      let raw, checked, firstError;
+      for (const feed of feeds) {
+        try {
+          const candidateRaw = await this._fetchFeed(feed);
+          const result = this._verify(candidateRaw);
+          if (!checked || result.payload.sequence > checked.payload.sequence) { raw = candidateRaw; checked = result; }
+        } catch (error) { if (!firstError) firstError = error; }
+      }
+      if (!checked) throw firstError || message('Güncelleme kaynağı bulunamadı.');
       const previous = this._settings;
       this._settings = { ...previous, highestSequence: Math.max(previous.highestSequence, checked.payload.sequence), lastCheckedAt: new Date().toISOString() };
       try { await this._atomicWrite(this._latestPath, raw); await this._saveSettings(); }
@@ -365,40 +376,50 @@ class UpdateManager {
       this._emit({ status: 'downloading', error: '', progress: 0, downloadBytes: 0, totalBytes: payload.installer.size });
       const target = this._installerPath(payload), directory = path.dirname(target);
       await this._ensureDirectory(directory);
-      const temporary = path.join(directory, '.partial-' + crypto.randomUUID());
-      const network = this._network(10 * 60 * 1000, 120000);
-      let file, response;
-      try {
-        response = await this._response(payload.installer.url, network);
-        contentLength(response, payload.installer.size, payload.installer.size);
-        file = await fs.open(temporary, 'wx', 0o600);
-        const hash = crypto.createHash('sha256'); let received = 0, lastNotice = 0;
-        // Transfer response ownership only once the disk file is ready. A disk
-        // error before this point must also close the live HTTP response.
-        const bodyResponse = response; response = null;
-        await this._readBody(bodyResponse, network, async chunk => {
-          received += chunk.length;
-          if (received > payload.installer.size) throw message('İndirilen dosya beklenen boyutu aşıyor.');
-          hash.update(chunk);
-          let offset = 0;
-          while (offset < chunk.length) { const result = await file.write(chunk, offset, chunk.length - offset); if (!result.bytesWritten) throw message('Güncelleme dosyası diske yazılamadı.'); offset += result.bytesWritten; }
-          if (received === payload.installer.size || Date.now() - lastNotice > 100) { lastNotice = Date.now(); this._emit({ progress: received / payload.installer.size, downloadBytes: received }); }
-        });
-        if (received !== payload.installer.size) throw message('Güncelleme dosyası eksik indirildi. Yeniden deneyin.');
-        if (hash.digest('hex') !== payload.installer.sha256) throw message('Güncelleme dosyasının bütünlüğü doğrulanamadı. Dosya kullanılmayacak.');
-        await file.sync(); await file.close(); file = null;
-        const existing = await fs.lstat(target).catch(error => { if (error.code === 'ENOENT') return null; throw error; });
-        if (existing && (!existing.isFile() || existing.isSymbolicLink())) throw message('Güncelleme önbelleği güvenli biçimde açılamadı.');
-        await fs.rename(temporary, target);
-        if (!await this._cacheMatches(payload)) throw message('Kaydedilen güncelleme yeniden doğrulanamadı.');
-        this._downloadedSha = payload.installer.sha256;
-        await this._pruneCache(payload.installer.sha256).catch(() => {});
-        return this._emit({ status: 'downloaded', error: '', progress: 1, downloadBytes: payload.installer.size, totalBytes: payload.installer.size });
-      } finally {
-        network.finish(); if (response) closeResponse(response);
-        if (file) await file.close().catch(() => {}); await fs.rm(temporary, { force: true }).catch(() => {});
+      const urls = [...new Set([payload.installer.url, ...mirrorUrls(payload.installer.url, payload.installer.fileName)])];
+      let lastError;
+      for (const url of urls) {
+        this._emit({ progress: 0, downloadBytes: 0 });
+        try { await this._downloadFrom(url, payload, target, directory); lastError = null; break; }
+        catch (error) { lastError = error; }
       }
+      if (lastError) throw lastError;
+      this._downloadedSha = payload.installer.sha256;
+      await this._pruneCache(payload.installer.sha256).catch(() => {});
+      return this._emit({ status: 'downloaded', error: '', progress: 1, downloadBytes: payload.installer.size, totalBytes: payload.installer.size });
     });
+  }
+  async _downloadFrom(url, payload, target, directory) {
+    const temporary = path.join(directory, '.partial-' + crypto.randomUUID());
+    const network = this._network(10 * 60 * 1000, 120000);
+    let file, response;
+    try {
+      response = await this._response(url, network);
+      contentLength(response, payload.installer.size, payload.installer.size);
+      file = await fs.open(temporary, 'wx', 0o600);
+      const hash = crypto.createHash('sha256'); let received = 0, lastNotice = 0;
+      // Transfer response ownership only once the disk file is ready. A disk
+      // error before this point must also close the live HTTP response.
+      const bodyResponse = response; response = null;
+      await this._readBody(bodyResponse, network, async chunk => {
+        received += chunk.length;
+        if (received > payload.installer.size) throw message('İndirilen dosya beklenen boyutu aşıyor.');
+        hash.update(chunk);
+        let offset = 0;
+        while (offset < chunk.length) { const result = await file.write(chunk, offset, chunk.length - offset); if (!result.bytesWritten) throw message('Güncelleme dosyası diske yazılamadı.'); offset += result.bytesWritten; }
+        if (received === payload.installer.size || Date.now() - lastNotice > 100) { lastNotice = Date.now(); this._emit({ progress: received / payload.installer.size, downloadBytes: received }); }
+      });
+      if (received !== payload.installer.size) throw message('Güncelleme dosyası eksik indirildi. Yeniden deneyin.');
+      if (hash.digest('hex') !== payload.installer.sha256) throw message('Güncelleme dosyasının bütünlüğü doğrulanamadı. Dosya kullanılmayacak.');
+      await file.sync(); await file.close(); file = null;
+      const existing = await fs.lstat(target).catch(error => { if (error.code === 'ENOENT') return null; throw error; });
+      if (existing && (!existing.isFile() || existing.isSymbolicLink())) throw message('Güncelleme önbelleği güvenli biçimde açılamadı.');
+      await fs.rename(temporary, target);
+      if (!await this._cacheMatches(payload)) throw message('Kaydedilen güncelleme yeniden doğrulanamadı.');
+    } finally {
+      network.finish(); if (response) closeResponse(response);
+      if (file) await file.close().catch(() => {}); await fs.rm(temporary, { force: true }).catch(() => {});
+    }
   }
   async _pruneCache(currentSha) {
     const candidates = [];
@@ -449,4 +470,4 @@ class UpdateManager {
   }
 }
 
-module.exports = { UpdateManager };
+module.exports = { UpdateManager, DEFAULT_FEEDS };

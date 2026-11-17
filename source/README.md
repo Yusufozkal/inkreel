@@ -1,6 +1,6 @@
 # Inkreel kaynak kodu
 
-Windows 3.3.1 ve Android 3.3.0 uygulamalarının kaynakları, tasarım varlıkları, testleri ve derleme araçları bu klasördedir. İndirme ve güncelleme adresleri aynı depoda korunur; derlenmiş uygulamalar [Releases](https://gitlab.com/Turkish_Vito/inkreel/-/releases/karevo-v3.2.3-preview) bölümündedir.
+Windows 3.3.2 ve Android 3.3.0 uygulamalarının kaynakları, tasarım varlıkları, testleri ve derleme araçları bu klasördedir. İndirme ve güncelleme adresleri aynı depoda korunur; derlenmiş uygulamalar [Releases](https://gitlab.com/Turkish_Vito/inkreel/-/releases/karevo-v3.2.3-preview) bölümündedir.
 
 | Klasör | İçerik |
 | --- | --- |

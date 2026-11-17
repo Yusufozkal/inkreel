@@ -10,23 +10,23 @@ const report={environment:'jsdom22 + real Napi Canvas + fake-indexeddb; native u
 function check(name){report.checks.push(name);console.log('PASS:',name);}
 function deferred(){let resolve;const promise=new Promise(done=>resolve=done);return{promise,resolve};}
 function installNativeMock(w,context){
- const state={status:'idle',currentVersion:'3.3.1',latestVersion:null,notes:'',progress:0,feedUrl:'',autoCheck:true,configured:false,lastCheckedAt:null,error:null,downloadBytes:0,totalBytes:0};
+ const state={status:'idle',currentVersion:'3.3.2',latestVersion:null,notes:'',progress:0,feedUrl:'',autoCheck:true,configured:true,lastCheckedAt:null,error:null,downloadBytes:0,totalBytes:0};
  const controls={state,calls:context.calls,configureError:null,checkError:null,downloadTask:null,installTask:null};
  controls.emit=patch=>{Object.assign(state,patch);w.dispatchEvent(new w.CustomEvent('studio-update-state',{detail:copy(state)}));};
  const outcome=()=>({ok:true,state:copy(state)});
  Object.assign(w.StudioDesktop,{
-  getInfo:async()=>({platform:'win32',version:'3.3.1',updateCapable:true}),
+  getInfo:async()=>({platform:'win32',version:'3.3.2',updateCapable:true}),
   getUpdateState:async()=>{context.calls.push({method:'getUpdateState'});return outcome();},
   configureUpdates:async config=>{
    context.calls.push({method:'configureUpdates',config:copy(config)});
    if(controls.configureError)return{ok:false,error:controls.configureError};
    if(config.feedUrl){try{const url=new URL(config.feedUrl);if(url.protocol!=='https:'||url.username||url.password)throw Error();}catch(_){return{ok:false,error:'Güncelleme adresi güvenli bir HTTPS bağlantısı olmalı.'};}}
-   controls.emit({feedUrl:config.feedUrl,autoCheck:config.autoCheck,configured:Boolean(config.feedUrl),status:'idle',error:null});return outcome();
+   controls.emit({feedUrl:config.feedUrl,autoCheck:config.autoCheck,status:'idle',error:null});return outcome();
   },
   checkForUpdates:async()=>{
    context.calls.push({method:'checkForUpdates'});controls.emit({status:'checking',error:null});
    if(controls.checkError){controls.emit({status:'error',error:controls.checkError});return{ok:false,error:controls.checkError,state:copy(state)};}
-   controls.emit({status:'available',latestVersion:'3.3.2',notes:'Yeni şablonlar\nDaha hızlı kayıt',lastCheckedAt:'2026-10-20T12:00:00.000Z',progress:0});return outcome();
+   controls.emit({status:'available',latestVersion:'3.3.3',notes:'Yeni şablonlar\nDaha hızlı kayıt',lastCheckedAt:'2026-10-20T12:00:00.000Z',progress:0});return outcome();
   },
   downloadUpdate:async()=>{
    context.calls.push({method:'downloadUpdate'});controls.emit({status:'downloading',progress:.25,downloadBytes:2500,totalBytes:10000});
@@ -50,14 +50,15 @@ async function main(){
  const project=()=>plain(w.StudioApp.getProject());
  const invokeCount=method=>controls.calls.filter(call=>call.method===method).length;
  await w.StudioApp.ready;await until(()=>invokeCount('getUpdateState')>0,'initial updater state');
- assert.equal(w.StudioApp.version,'3.3.1');assert.equal(w.StudioCore.VERSION,3);
+ assert.equal(w.StudioApp.version,'3.3.2');assert.equal(w.StudioCore.VERSION,3);
  click(IDS.button);await until(()=>$(IDS.dialog).open,'open updates dialog');
- assert.match($(IDS.status).textContent,/kaynağı henüz ayarlanmadı/);
- assert.equal($(IDS.check).disabled,true);assert.equal($('updateSourceDetails').open,true);
- assert.equal(invokeCount('checkForUpdates'),0,'No network check without configured source');
+ assert.doesNotMatch($(IDS.status).textContent,/kaynağı henüz ayarlanmadı/);
+ assert.equal($(IDS.check).disabled,false,'Check works with built-in sources');assert.equal($('updateSourceDetails').open,false);
+ assert.match($('updateSourceDetails').textContent,/Ek güncelleme kaynağı \(isteğe bağlı\)/);assert.match($(IDS.feed).placeholder,/Boş bırakın/);
+ assert.equal(invokeCount('checkForUpdates'),0,'No network check happens automatically');
  assert.equal($(IDS.download).classList.contains('hidden'),true);
  assert.equal($(IDS.install).classList.contains('hidden'),true);
- check('Unconfigured source is explicit; no check/download/install occurs automatically');
+ check('Built-in sources need no setup; source settings stay collapsed and optional');
 
  const invalidBefore=invokeCount('configureUpdates');input(IDS.feed,'http://updates.invalid/latest.json');click(IDS.save);
  await until(()=>/HTTPS/.test($(IDS.message).textContent),'invalid HTTPS source explanation');
@@ -70,7 +71,7 @@ async function main(){
  assert.equal(w.StudioUpdates.sourceUrl('https://gitlab.com/Turkish_Vito/inkreel/-/releases/v1.0.0'),'https://gitlab.com/Turkish_Vito/inkreel/-/releases/v1.0.0');
  assert.equal(w.StudioUpdates.sourceUrl('https://updates.example.com/stable/latest.json'),'https://updates.example.com/stable/latest.json');
  input(IDS.feed,'Turkish_Vito/inkreel');input(IDS.auto,false);click(IDS.save);
- await until(()=>controls.state.configured&&$(IDS.check).disabled===false,'source saved');
+ await until(()=>controls.state.feedUrl&&$(IDS.check).disabled===false,'source saved');
  const configured=controls.calls.filter(call=>call.method==='configureUpdates').at(-1).config;
  assert.deepEqual(configured,{feedUrl:'https://gitlab.com/Turkish_Vito/inkreel/-/releases/permalink/latest/downloads/latest.json',autoCheck:false});
  assert.equal($(IDS.auto).checked,false,'Typed auto-check choice survives redraw');
@@ -83,7 +84,7 @@ async function main(){
  assert.equal($(IDS.check).disabled,false,'Offline checks can be retried');
  controls.checkError=null;click(IDS.check);
  await until(()=>controls.state.status==='available'&&!$(IDS.download).disabled,'signed release available');
- assert.match($(IDS.status).textContent,/Yeni sürüm/);assert.match($('updateVersion').textContent,/3\.3\.2/);
+ assert.match($(IDS.status).textContent,/Yeni sürüm/);assert.match($('updateVersion').textContent,/3\.3\.3/);
  assert.equal($(IDS.notes).textContent,'Yeni şablonlar\nDaha hızlı kayıt');
  controls.emit({notes:'<img src=x onerror=alert(1)> **Yalnız düz metin**'});
  assert.equal($(IDS.notes).querySelector('img'),null);assert.match($(IDS.notes).textContent,/<img/);

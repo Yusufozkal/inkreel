@@ -7,7 +7,8 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const os = require('node:os');
 const { EventEmitter } = require('node:events');
-const { UpdateManager } = require('../native/update-manager.cjs');
+const { UpdateManager, DEFAULT_FEEDS } = require('../native/update-manager.cjs');
+const { mirrorUrls } = require('../native/update-sources.cjs');
 const C = require('../native/update-contract.cjs');
 
 const keys = crypto.generateKeyPairSync('ed25519');
@@ -37,7 +38,7 @@ async function fixture(t, extra = {}) {
     calls.push({ url, options });
     return url === FEED ? response(currentEnvelope, { 'content-length': String(currentEnvelope.length) }) : installerResponse(url, options);
   };
-  const options = { appVersion: '3.1.0', userDataDir: directory, publicKey: pin, transport, ...extra };
+  const options = { appVersion: '3.1.0', userDataDir: directory, publicKey: pin, transport, defaultFeeds: [], ...extra };
   const manager = new UpdateManager(options);
   await manager.init();
   return { manager, directory, options, calls, setEnvelope(value) { currentEnvelope = value; }, setInstaller(value) { installerResponse = value; },
@@ -54,7 +55,7 @@ async function partials(directory) {
 
 test('default offline editor, HTTPS settings, clone isolation, persistence and platform gate', async t => {
   const f = await fixture(t);
-  assert.equal(f.manager.getState().status, 'idle'); assert.equal(f.manager.getState().configured, false);
+  assert.equal(f.manager.getState().status, 'idle'); assert.equal(f.manager.getState().configured, true); assert.equal(f.manager.getState().feedUrl, '');
   const copy = f.manager.getState(); copy.autoCheck = false; assert.equal(f.manager.getState().autoCheck, true);
   for (const url of ['http://example.test/a', 'https://user:secret@example.test/a', 'https://example.test/a\nfile', 'file:///a']) {
     await assert.rejects(f.manager.configure({ feedUrl: url, autoCheck: true }));
@@ -63,7 +64,7 @@ test('default offline editor, HTTPS settings, clone isolation, persistence and p
   const next = new UpdateManager(f.options); await next.init();
   assert.equal(next.getState().feedUrl, FEED); assert.equal(next.getState().autoCheck, false);
   const unsupported = new UpdateManager({ ...f.options, platform: 'linux' }); await unsupported.init();
-  assert.equal(unsupported.getState().status, 'disabled'); await assert.rejects(unsupported.check(), /platform/);
+  assert.equal(unsupported.getState().status, 'disabled'); assert.equal(unsupported.getState().configured, false); await assert.rejects(unsupported.check(), /platform/);
   assert.equal(f.calls.length, 0);
 });
 
@@ -308,4 +309,97 @@ test('startup removes only own interrupted temporary files and reports spawn err
   await assert.rejects(next.launchInstaller({ parentPid: 0 }), /işlem/);
   await assert.rejects(next.launchInstaller({ parentPid: 123 }), /başlatılamadı/);
   assert(!next.getState().error.includes('sensitive')); assert.equal(next.getState().canInstall, true);
+});
+
+const GL_FEED = DEFAULT_FEEDS[0], GH_FEED = DEFAULT_FEEDS[1];
+const GL_EXE = 'https://gitlab.com/Turkish_Vito/inkreel/-/releases/v3.2.0/downloads/Bulten-Studio-3.2.0-Setup.exe';
+const GH_EXE = 'https://github.com/Yusufozkal/inkreel/releases/download/v3.2.0/Bulten-Studio-3.2.0-Setup.exe';
+function dual(t, feeds, installers = {}, extra = {}) {
+  const calls = [];
+  const transport = async url => {
+    calls.push(url);
+    const value = feeds[url] !== undefined ? feeds[url] : installers[url];
+    if (value === undefined || value === 404) return response([], {}, 404);
+    if (typeof value === 'function') return value();
+    if (value && value.statusCode) return value;
+    return response(value, { 'content-length': String(value.length) });
+  };
+  return fixture(t, { transport, defaultFeeds: DEFAULT_FEEDS, ...extra }).then(f => ({ ...f, urls: calls }));
+}
+const signed = (sequence, url = GL_EXE) => envelope(payload({ sequence, installer: { ...payload().installer, url } }));
+const good = () => response([bytes], { 'content-length': String(bytes.length) });
+
+test('built-in feeds: highest verified sequence wins; ties keep the first feed', async t => {
+  const f = await dual(t, { [GL_FEED]: signed(30200), [GH_FEED]: signed(30300, GH_EXE) });
+  await f.manager.check();
+  assert.deepEqual(f.urls, [GL_FEED, GH_FEED]);
+  assert.equal(f.manager.getState().status, 'available');
+  assert.equal(JSON.parse(await fs.readFile(path.join(f.directory, 'update-settings.json'), 'utf8')).highestSequence, 30300);
+  assert.deepEqual(await fs.readFile(path.join(f.directory, 'update-cache', 'latest.json')), signed(30300, GH_EXE));
+  const tie = await dual(t, { [GL_FEED]: signed(30200), [GH_FEED]: signed(30200, GH_EXE) });
+  await tie.manager.check();
+  assert.deepEqual(await fs.readFile(path.join(tie.directory, 'update-cache', 'latest.json')), signed(30200));
+});
+
+test('built-in feeds: a custom feed is tried first and duplicates are removed', async t => {
+  const f = await dual(t, { [FEED]: signed(30200), [GL_FEED]: 404, [GH_FEED]: 404 });
+  await f.manager.configure({ feedUrl: FEED, autoCheck: true });
+  await f.manager.check();
+  assert.deepEqual(f.urls, [FEED, GL_FEED, GH_FEED]);
+  await f.manager.configure({ feedUrl: GL_FEED, autoCheck: true });
+  f.urls.length = 0; await f.manager.check().catch(() => {});
+  assert.deepEqual(f.urls, [GL_FEED, GH_FEED]);
+});
+
+test('built-in feeds: one 404 or forged feed is ignored; all failing surfaces the first error', async t => {
+  const one = await dual(t, { [GL_FEED]: 404, [GH_FEED]: signed(30200, GH_EXE) });
+  await one.manager.check(); assert.equal(one.manager.getState().status, 'available');
+  const forgedValue = JSON.parse(signed(30500)); forgedValue.signature = forgedValue.signature.replace(/^./, c => c === 'A' ? 'B' : 'A');
+  const bad = await dual(t, { [GL_FEED]: Buffer.from(JSON.stringify(forgedValue)), [GH_FEED]: signed(30200, GH_EXE) });
+  await bad.manager.check(); assert.deepEqual(await fs.readFile(path.join(bad.directory, 'update-cache', 'latest.json')), signed(30200, GH_EXE));
+  const none = await dual(t, { [GL_FEED]: 404, [GH_FEED]: response([], {}, 500) });
+  await assert.rejects(none.manager.check(), /bulunamadı/);
+  assert.equal(none.manager.getState().status, 'error');
+});
+
+test('installer download falls back to the GitHub mirror when the GitLab URL fails', async t => {
+  const f = await dual(t, { [GL_FEED]: signed(30200) }, { [GL_EXE]: 404, [GH_EXE]: good });
+  await f.manager.check(); await f.manager.download();
+  assert.deepEqual(f.urls.slice(-2), [GL_EXE, GH_EXE]);
+  assert.equal(f.manager.getState().status, 'downloaded'); assert.equal(f.manager.getState().progress, 1);
+  assert.deepEqual(await partials(f.directory), []);
+});
+
+test('installer download retries on sha mismatch, never accepting tampered bytes', async t => {
+  const tampered = Buffer.from(bytes); tampered[3] ^= 1;
+  const bad = () => response([tampered], { 'content-length': String(bytes.length) });
+  const f = await dual(t, { [GL_FEED]: signed(30200) }, { [GL_EXE]: bad, [GH_EXE]: good });
+  await f.manager.check(); await f.manager.download();
+  assert.deepEqual(f.urls.slice(-2), [GL_EXE, GH_EXE]); assert.equal(f.manager.getState().canInstall, true);
+  assert.deepEqual(await partials(f.directory), []);
+  const both = await dual(t, { [GL_FEED]: signed(30200) }, { [GL_EXE]: () => response([bytes.subarray(0, 5)], { 'content-length': '5' }), [GH_EXE]: bad });
+  await both.manager.check();
+  await assert.rejects(both.manager.download(), /bütünlüğü doğrulanamadı/);
+  assert.equal(both.manager.getState().canInstall, false); assert.deepEqual(await partials(both.directory), []);
+});
+
+test('installer mirror mapping is exact and only between the two official forms', () => {
+  const file = 'Bulten-Studio-3.2.0-Setup.exe';
+  assert.deepEqual(mirrorUrls(GL_EXE, file), [GH_EXE]);
+  assert.deepEqual(mirrorUrls(GH_EXE, file), [GL_EXE]);
+  assert.deepEqual(mirrorUrls('https://gitlab.com/Turkish_Vito/karevo/-/releases/v3.2.0/downloads/' + file, file), [GH_EXE]);
+  for (const bad of [
+    GL_EXE + '/', GL_EXE + '?x=1', GL_EXE + '#a', GL_EXE.replace('https', 'http'), GL_EXE.replace('Turkish_Vito', 'Other'),
+    GL_EXE.replace('gitlab.com', 'gitlab.com.evil.test'), GL_EXE.replace('v3.2.0', '..'), GL_EXE.replace('v3.2.0', 'v3.2.0/../x'),
+    GL_EXE.replace(file, 'Other.exe'), GL_EXE.replace(file, 'a%2Fb.exe'),
+    GH_EXE.replace('Yusufozkal', 'Evil'), GH_EXE.replace('/download/', '/latest/'), 'https://example.test/' + file,
+    'https://user:x@github.com/Yusufozkal/inkreel/releases/download/v3.2.0/' + file
+  ]) assert.deepEqual(mirrorUrls(bad, file), [], bad);
+  assert.deepEqual(mirrorUrls(GL_EXE, 'Other.exe'), []); assert.deepEqual(mirrorUrls(undefined, file), []);
+});
+
+test('installer URLs outside the official forms are downloaded without any mirror', async t => {
+  const f = await dual(t, { [GL_FEED]: signed(30200, URL) }, { [URL]: 404 });
+  await f.manager.check(); await assert.rejects(f.manager.download(), /bulunamadı/);
+  assert.equal(f.urls.filter(url => url !== GL_FEED && url !== GH_FEED).length, 1);
 });

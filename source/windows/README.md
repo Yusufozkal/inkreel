@@ -1,4 +1,4 @@
-# Inkreel 3.3.1
+# Inkreel 3.3.2
 
 Yayıncılar ve sosyal medya editörleri için Türkçe, çevrimdışı içerik atölyesi. Windows masaüstü uygulaması ve kurulumsuz HTML sürümü aynı proje biçimini kullanır.
 
