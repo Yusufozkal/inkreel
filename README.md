@@ -5,9 +5,9 @@
 
   Haber görsellerinden kısa videolara, sosyal medya içeriklerini tek bir çalışma alanında hazırla.
 
-  ### [⬇ Windows için indir · 3.3.1](https://gitlab.com/Turkish_Vito/inkreel/-/releases/v3.3.1/downloads/Inkreel-3.3.1-Setup.exe) &nbsp;&nbsp;&nbsp; [⬇ Android için indir · 3.3.0](https://gitlab.com/Turkish_Vito/inkreel/-/releases/v3.3.0/downloads/Inkreel-3.3.0-Android.apk)
+  ### [⬇ Windows için indir · 3.3.0](https://gitlab.com/Turkish_Vito/inkreel/-/releases/v3.3.0/downloads/Inkreel-3.3.0-Setup.exe) &nbsp;&nbsp;&nbsp; [⬇ Android için indir · 3.3.0](https://gitlab.com/Turkish_Vito/inkreel/-/releases/v3.3.0/downloads/Inkreel-3.3.0-Android.apk)
 
-  [Sürüm bilgileri](https://gitlab.com/Turkish_Vito/inkreel/-/releases/v3.3.1) · [Kurulum](#kurulum) · [Güncellemeler](#güncellemeler) · [Kaynak kodu](source/README.md)
+  [Sürüm bilgileri](https://gitlab.com/Turkish_Vito/inkreel/-/releases/v3.3.0) · [Kurulum](#kurulum) · [Güncellemeler](#güncellemeler) · [Kaynak kodu](source/README.md)
 
   Windows 10 / 11 · 64 bit &nbsp; • &nbsp; Android 8+ &nbsp; • &nbsp; Manuel kurulum
 </div>
@@ -35,8 +35,8 @@ Video düzenleyici tek kliple çalışır. Kaynak video en fazla 5 dakika ve 120
 
 **Windows**
 
-1. [Inkreel Windows kurucusunu indir](https://gitlab.com/Turkish_Vito/inkreel/-/releases/v3.3.1/downloads/Inkreel-3.3.1-Setup.exe).
-2. İndirilen `Inkreel-3.3.1-Setup.exe` dosyasını aç ve kurulum adımlarını izle.
+1. [Inkreel Windows kurucusunu indir](https://gitlab.com/Turkish_Vito/inkreel/-/releases/v3.3.0/downloads/Inkreel-3.3.0-Setup.exe).
+2. İndirilen `Inkreel-3.3.0-Setup.exe` dosyasını aç ve kurulum adımlarını izle.
 3. Uygulamayı aç, bir şablon seç ve ilk tasarımını oluştur.
 
 **Gereksinim:** Windows 10 veya Windows 11, 64 bit. Kurulumdan önce mevcut çalışmalarını proje dosyası olarak yedekle.
@@ -70,7 +70,7 @@ Android sürümü bu sayfadaki APK ile elle güncellenir.
 
 ## Sürümler ve arşiv
 
-[Inkreel 3.3.1 sürümünü görüntüle](https://gitlab.com/Turkish_Vito/inkreel/-/releases/v3.3.1) · [Tüm sürümler](https://gitlab.com/Turkish_Vito/inkreel/-/releases)
+[Inkreel 3.3.0 sürümünü görüntüle](https://gitlab.com/Turkish_Vito/inkreel/-/releases/v3.3.0) · [Tüm sürümler](https://gitlab.com/Turkish_Vito/inkreel/-/releases)
 
 Windows ve Android kaynakları, testler ve derleme talimatları artık [Kaynak kodu](source/README.md) bölümündedir. Windows ve Android kurucuları GitLab Releases bölümündedir; indirme bağlantıları ve dosya özetleri doğrulanmıştır. İmzalı otomatik güncelleme kanalı GitLab'da çalışıyor.
 
@@ -81,10 +81,10 @@ Inkreel daha önce Karevo, ondan önce de Bülten Studio adıyla sunuluyordu. Es
 
 Windows’ta Inkreel, Karevo’nun kurulu olduğu klasöre kurulur; Karevo programı ve kısayolları Inkreel ile değiştirilir, verilerin yerinde kalır. Android sürümü ayrı kurulur, eski uygulamanın verilerini otomatik taşımaz. 3.0 ve önceki sürümlerde güncel kurucuyu bir kez elle kurmak gerekir.
 
-Proje daha önce GitHub'da yayımlanıyordu; o adres artık kullanılmıyor ve yeni adrese yönlendirmiyor. Güncel indirmeler ve güncellemeler yalnızca GitLab'dadır.
+Güncel indirmeler ve güncellemeler yalnızca GitLab'dadır.
 
 </details>
 
 ## Kaynak kodu ve depolar
 
-Asıl depo [GitLab](https://gitlab.com/Turkish_Vito/inkreel)'dadır; sürümler ve otomatik güncellemeler oradan yayımlanır. [GitHub](https://github.com/Yusufozkal/inkreel) aynı geçmişin yansısıdır ve GitLab'a her gönderimde kendiliğinden güncellenir. Karevo ve Bülten Studio dönemlerinin bütün geçmişi ve sürüm etiketleri her iki depoda da durur.
+Asıl depo [GitLab](https://gitlab.com/Turkish_Vito/inkreel)'dadır; sürümler ve otomatik güncellemeler oradan yayımlanır. [GitHub](https://github.com/Yusufozkal/karevo) aynı geçmişin yansısıdır; GitLab'daki değişiklikler oraya da aktarılır. Karevo ve Bülten Studio dönemlerinin bütün geçmişi her iki depoda da durur.
