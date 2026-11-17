@@ -1,0 +1,88 @@
+# Copies GitLab releases (the primary source) to GitHub Releases, files included, so the
+# app's built-in GitHub update source and download fallback have the same signed files.
+# Run it from GitHub: Actions → "GitLab sürümünü GitHub'a kopyala" → Run workflow.
+name: GitLab sürümünü GitHub'a kopyala
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Sürüm etiketi (ör. v3.3.2). 'latest' = GitLab'daki en yeni, 'all' = hepsi"
+        required: true
+        default: latest
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mirror-release
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    env:
+      GITLAB_API: https://gitlab.com/api/v4/projects/Turkish_Vito%2Finkreel
+      GH_TOKEN: ${{ github.token }}
+      REQUESTED: ${{ github.event_name == 'push' && github.ref_name || inputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sürümleri kopyala
+        shell: bash
+        run: |
+          set -euo pipefail
+          releases=$(curl -fsS "$GITLAB_API/releases?per_page=100&order_by=released_at&sort=desc")
+          newest=$(jq -r '.[0].tag_name' <<<"$releases")
+          case "$REQUESTED" in
+            latest) tags="$newest" ;;
+            all) tags=$(jq -r 'reverse | .[].tag_name' <<<"$releases") ;;
+            *) tags="$REQUESTED" ;;
+          esac
+          for tag in $tags; do
+            [[ "$tag" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "Geçersiz etiket: $tag"; exit 1; }
+            release=$(jq -c --arg t "$tag" '.[] | select(.tag_name == $t)' <<<"$releases")
+            [ -n "$release" ] || { echo "GitLab'da $tag sürümü yok"; exit 1; }
+            commit=$(jq -r '.commit.id' <<<"$release")
+            git cat-file -e "$commit^{commit}" || { echo "$tag commit'i ($commit) GitHub'da yok"; exit 1; }
+            dir="$RUNNER_TEMP/$tag"; mkdir -p "$dir"
+            jq -r '.description // ""' <<<"$release" > "$dir.notes.md"
+            jq -r '.assets.links[] | [.name, (.direct_asset_url // .url)] | @tsv' <<<"$release" |
+              while IFS=$'\t' read -r name url; do
+                [[ "$name" =~ ^[A-Za-z0-9._-]+$ ]] || { echo "Geçersiz dosya adı: $name"; exit 1; }
+                curl -fsSL --retry 4 --retry-delay 15 -o "$dir/$name" "$url"
+              done
+            if [ -f "$dir/latest.json" ]; then
+              # Only publish files whose signature and installer hash match the app's public key.
+              node -e '
+                const fs = require("fs"), path = require("path"), crypto = require("crypto");
+                const C = require("./source/windows/native/update-contract.cjs");
+                const key = require("./source/windows/native/update-public-key.json");
+                const dir = process.argv[1];
+                const raw = JSON.parse(fs.readFileSync(path.join(dir, "latest.json"), "utf8"));
+                if (raw.keyId !== key.keyId) { console.log("::warning::Eski anahtarla imzalı arşiv sürümü, doğrulanmadan kopyalanıyor:", raw.keyId); process.exit(0); }
+                const { payload } = C.verifyEnvelope(fs.readFileSync(path.join(dir, "latest.json")), { publicKey: key, appVersion: "0.0.0" });
+                const exe = path.join(dir, payload.installer.fileName);
+                const sha = crypto.createHash("sha256").update(fs.readFileSync(exe)).digest("hex");
+                if (sha !== payload.installer.sha256 || fs.statSync(exe).size !== payload.installer.size) throw new Error("Kurucu imzalı bilgilerle eşleşmiyor");
+                console.log("Doğrulandı:", payload.version, payload.installer.fileName);
+              ' "$dir"
+            fi
+            latest=false; [ "$tag" = "$newest" ] && latest=true
+            if gh release view "$tag" >/dev/null 2>&1; then
+              # Never overwrite files that already exist on GitHub; only add missing ones.
+              have=$(gh release view "$tag" --json assets -q '.assets[].name')
+              for file in "$dir"/*; do
+                grep -qxF "$(basename "$file")" <<<"$have" || gh release upload "$tag" "$file"
+              done
+              [ "$latest" = true ] && gh release edit "$tag" --latest
+            else
+              gh release create "$tag" "$dir"/* --target "$commit" \
+                --title "$(jq -r '.name' <<<"$release")" --notes-file "$dir.notes.md" --latest="$latest"
+            fi
+            echo "Tamam: $tag"
+          done
