@@ -85,5 +85,6 @@ Proje daha önce GitHub'da yayımlanıyordu; o adres artık kullanılmıyor ve y
 
 </details>
 
+## Kaynak kodu ve depolar
 
-[Özgün GitHub geçmişi ve 7 sürüm etiketi yedeği](migration/README.md)
+Asıl depo [GitLab](https://gitlab.com/Turkish_Vito/inkreel)'dadır; sürümler ve otomatik güncellemeler oradan yayımlanır. [GitHub](https://github.com/Yusufozkal/inkreel) aynı geçmişin yansısıdır ve GitLab'a her gönderimde kendiliğinden güncellenir. Karevo ve Bülten Studio dönemlerinin bütün geçmişi ve sürüm etiketleri her iki depoda da durur.
